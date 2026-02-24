@@ -87,3 +87,37 @@ export const addComment = async (req, res) => {
   res.json(post.comments);
 };
 
+//get Feed posts
+export const getFeedPosts = async (req, res) => {
+  const user = req.user;
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+
+  const skip = (page - 1) * limit;
+
+  const posts = await Post.find({
+    $or: [
+      { user: { $in: user.following } },
+      { city: user.city },
+    ],
+  })
+    .populate("user", "name username avatar")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalPosts = await Post.countDocuments({
+    $or: [
+      { user: { $in: user.following } },
+      { city: user.city },
+    ],
+  });
+
+  res.json({
+    page,
+    totalPages: Math.ceil(totalPosts / limit),
+    totalPosts,
+    posts,
+  });
+};
