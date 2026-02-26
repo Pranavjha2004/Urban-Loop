@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Landing = () => {
   return (
-    <div>
+    <div className="bg-amber-100">
       <h1 className="text-3xl font-bold underline">
         Hello world!
       </h1>
