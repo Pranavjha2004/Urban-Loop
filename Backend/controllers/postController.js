@@ -89,35 +89,37 @@ export const addComment = async (req, res) => {
 
 //get Feed posts
 export const getFeedPosts = async (req, res) => {
-  const user = req.user;
+  try {
+    const user = req.user;
 
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 5;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
 
-  const skip = (page - 1) * limit;
+    const query = {
+      $or: [
+        { user: { $in: user.following } },
+        { city: user.city },
+      ],
+    };
 
-  const posts = await Post.find({
-    $or: [
-      { user: { $in: user.following } },
-      { city: user.city },
-    ],
-  })
-    .populate("user", "name username avatar")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
+    const posts = await Post.find(query)
+      .populate("user", "name username avatar")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-  const totalPosts = await Post.countDocuments({
-    $or: [
-      { user: { $in: user.following } },
-      { city: user.city },
-    ],
-  });
+    const totalPosts = await Post.countDocuments(query);
 
-  res.json({
-    page,
-    totalPages: Math.ceil(totalPosts / limit),
-    totalPosts,
-    posts,
-  });
+    const hasMore = skip + posts.length < totalPosts;
+
+    res.json({
+      posts,
+      hasMore,
+      page,
+      totalPosts,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };
