@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
+import ChatPage from "./pages/ChatPage";
 
 import "./App.css";
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/chat/:userId" element={<ChatPage />} />
 
           {/* 🔐 Protected Routes */}
           <Route
