@@ -60,12 +60,13 @@ export const registerUser = async (req, res) => {
 
 
 
-//LOGIN USER
+// LOGIN USER (SECURE VERSION)
+
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
-    // 1️⃣ Check fields
+    // 1️⃣ Validate input
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password required",
@@ -90,13 +91,22 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // 4️⃣ Generate token
+    // 4️⃣ Generate JWT
     const token = generateToken(user._id);
 
-    // 5️⃣ Send response
+    // 5️⃣ Set HTTP-Only Cookie
+    res.cookie("token", token, {
+      httpOnly: true, // 🔥 prevents JS access (XSS safe)
+      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      sameSite: "Strict", // CSRF protection
+      maxAge: rememberMe
+        ? 7 * 24 * 60 * 60 * 1000 // 7 days
+        : undefined, // session cookie
+    });
+
+    // 6️⃣ Send response (NO TOKEN RETURNED)
     res.status(200).json({
       message: "Login successful",
-      token,
       user: {
         _id: user._id,
         name: user.name,
@@ -104,6 +114,47 @@ export const loginUser = async (req, res) => {
         username: user.username,
       },
     });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
+// GET CURRENT LOGGED-IN USER
+export const getMe = async (req, res) => {
+  try {
+    // protect middleware already attaches user to req
+    res.status(200).json({
+      _id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      username: req.user.username,
+      city: req.user.city,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// LOGOUT USER
+export const logoutUser = (req, res) => {
+  try {
+    res.cookie("token", "", {
+      httpOnly: true,
+      expires: new Date(0), // immediately expire
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+
   } catch (error) {
     res.status(500).json({
       message: error.message,
