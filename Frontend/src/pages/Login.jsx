@@ -56,6 +56,7 @@ function Login() {
     try {
       setLoading(true);
       const { data } = await API.post("/auth/login", { email, password });
+      if (data.token) localStorage.setItem("token", data.token);
       setUser(data.user);
       showToast("Login successful! 🚀", "success");
       navigate("/feed", { replace: true });

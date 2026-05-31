@@ -21,7 +21,7 @@ import "./App.css";
 
 function AppInner() {
   const [activeCall, setActiveCall] = useState(null);
-  const { theme, loading } = useAuth(); // Access both theme and loading state
+  const { user, theme, loading } = useAuth(); // Access both theme and loading state
   const isDark = theme === "dark";
 
   const handleAcceptCall = (callData) => {
@@ -108,6 +108,7 @@ function AppInner() {
             callType={activeCall.callType}
             chatId={activeCall.chatId}
             participants={activeCall.participants}
+            userId={user?._id}
             isInitiator={activeCall.isInitiator}
             onEnd={() => setActiveCall(null)}
           />

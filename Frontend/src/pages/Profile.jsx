@@ -117,8 +117,14 @@ function Profile() {
   }, []);
 
   const handleLogout = async () => {
-    try { await API.post("/auth/logout"); window.location.href = "/login"; }
+    try {
+      await API.post("/auth/logout");
+    }
     catch (err) { console.error(err); }
+    finally {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
   };
 
   const handleDeletePost = async (postId, e) => {

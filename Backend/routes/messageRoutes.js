@@ -21,8 +21,8 @@ router.post("/",                    protect, upload.single("file"), sendMessage)
 router.post("/poll",                protect, sendPoll);
 router.post("/forward",             protect, forwardMessage);
 router.post("/:messageId/vote",     protect, votePoll);
-router.get("/:chatId",              protect, getMessages);
 router.get("/unread/count",         protect, getUnreadCount);
+router.get("/:chatId",              protect, getMessages);
 router.put("/read/:chatId",         protect, markMessagesRead);
 router.put("/:messageId",           protect, editMessage);
 router.delete("/:messageId",        protect, deleteMessage);

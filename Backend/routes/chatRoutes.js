@@ -4,6 +4,7 @@ import {
   getOrCreateChat,
   createGroupChat,
   getUserChats,
+  getChatById,
   deleteChat,
 } from "../controllers/chatController.js";
 
@@ -17,6 +18,9 @@ router.post("/group", protect, createGroupChat);
 
 // Sidebar list (with unread counts)
 router.get("/", protect, getUserChats);
+
+// Single chat lookup (used by call history)
+router.get("/:chatId", protect, getChatById);
 
 // Delete entire chat + all its messages
 router.delete("/:chatId", protect, deleteChat);
