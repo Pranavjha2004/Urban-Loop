@@ -40,10 +40,17 @@ export const registerUser = async (req, res) => {
     const token = generateToken(user._id);
     const cookieSameSite = process.env.COOKIE_SAMESITE || (process.env.NODE_ENV === "production" ? "None" : "Strict");
 
-    // 6️⃣ Send response
+    // 6️⃣ Set HTTP-Only Cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: cookieSameSite,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // 7️⃣ Send response
     res.status(201).json({
       message: "User registered successfully",
-      token,
       user: {
         _id: user._id,
         name: user.name,
@@ -94,6 +101,7 @@ export const loginUser = async (req, res) => {
 
     // 4️⃣ Generate JWT
     const token = generateToken(user._id);
+    const cookieSameSite = process.env.COOKIE_SAMESITE || (process.env.NODE_ENV === "production" ? "None" : "Strict");
 
     // 5️⃣ Set HTTP-Only Cookie
     res.cookie("token", token, {
