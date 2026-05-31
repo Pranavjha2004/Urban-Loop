@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const { checkAuth, theme, toggleTheme } = useAuth();
+  const { setUser, theme, toggleTheme } = useAuth();
   const isDark = theme === "dark";
 
   // Form States
@@ -55,10 +55,10 @@ function Login() {
     }
     try {
       setLoading(true);
-      await API.post("/auth/login", { email, password });
-      await checkAuth();
+      const { data } = await API.post("/auth/login", { email, password });
+      setUser(data.user);
       showToast("Login successful! 🚀", "success");
-      setTimeout(() => navigate("/feed"), 1000);
+      navigate("/feed", { replace: true });
     } catch (err) {
       setLoading(false);
       showToast("Login failed. Check credentials.", "error");
