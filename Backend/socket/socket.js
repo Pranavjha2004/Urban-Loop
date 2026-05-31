@@ -111,13 +111,13 @@ export const initSocket = (server) => {
     // Active rooms: roomId → Set of participantUserIds
     // Stored at module level so all sockets can access it
 
-    socket.on("call-invite", ({ roomId, type, callType, chatId, to, from, callerName, callerAvatar }) => {
+    socket.on("call-invite", ({ roomId, type, callType, chatId, to, from, callerName, callerAvatar, participants }) => {
       // to = array of userIds to invite
       to.forEach((userId) => {
         const targetSocket = onlineUsers.get(userId);
         if (targetSocket) {
           io.to(targetSocket).emit("incoming-call", {
-            roomId, type, callType, chatId, from, callerName, callerAvatar,
+            roomId, type, callType, chatId, from, callerName, callerAvatar, participants,
           });
         }
       });

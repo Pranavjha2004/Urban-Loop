@@ -29,7 +29,7 @@ function VideoTile({ stream, label, isLocal, isMuted, isCamOff, avatar, isSmall 
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       className={`relative bg-slate-900/90 rounded-[2rem] overflow-hidden flex items-center justify-center border border-white/10 shadow-2xl
-      ${isSmall ? "w-28 h-20 md:w-40 md:h-28" : "w-full h-full min-h-[180px] max-h-[68vh]"}`}
+      ${isSmall ? "w-24 h-16 sm:w-28 sm:h-20 md:w-40 md:h-28" : "w-full h-full min-h-[120px] sm:min-h-[180px]"}`}
     >
       {stream && !isCamOff ? (
         <video
@@ -81,9 +81,9 @@ function ControlButton({ onClick, active, danger, disabled, icon, label, classNa
       whileTap={{ scale: 0.92 }}
       onClick={onClick}
       disabled={disabled}
-      className={`flex flex-col items-center gap-1.5 group disabled:opacity-40 ${className}`}
+      className={`flex min-w-0 flex-col items-center gap-1 group disabled:opacity-40 sm:gap-1.5 ${className}`}
     >
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg
+      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all shadow-lg sm:h-14 sm:w-14
         ${danger
           ? "bg-red-500 hover:bg-red-400 text-white"
           : active
@@ -91,7 +91,7 @@ function ControlButton({ onClick, active, danger, disabled, icon, label, classNa
             : "bg-slate-800/80 hover:bg-slate-700 text-white border border-white/10"}`}>
         {icon}
       </div>
-      <span className="text-[10px] text-zinc-400 font-medium">{label}</span>
+      <span className="max-w-full truncate text-[9px] font-medium text-zinc-400 sm:text-[10px]">{label}</span>
     </motion.button>
   );
 }
@@ -183,6 +183,10 @@ export default function CallRoom({
   const [showAddModal,   setShowAddModal]   = useState(false);
   const [callParticipants, setCallParticipants] = useState(participants || []);
 
+  useEffect(() => {
+    setCallParticipants(participants || []);
+  }, [participants]);
+
   const {
     localStream, remoteStreams,
     isMuted, isCamOff, isSharingScreen, qualityLevel, error,
@@ -236,6 +240,7 @@ export default function CallRoom({
         from: userId,
         callerName: "Conference Call",
         callerAvatar: null,
+        participants: callParticipants,
       });
     });
   }, [roomId, type, callType, chatId, userId, callParticipants]);
@@ -253,6 +258,10 @@ export default function CallRoom({
   const remoteEntries  = Object.entries(remoteStreams);
   const totalRemote    = remoteEntries.length;
   const isGroupCall    = totalRemote > 1;
+  const participantCount = Math.max(
+    callParticipants.filter((p) => p?._id).length,
+    (userId ? 1 : 0) + totalRemote
+  );
 
   const gridClass = () => {
     if (totalRemote === 0) return "grid-cols-1";
@@ -268,10 +277,10 @@ export default function CallRoom({
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[150] flex flex-col urban-shell text-white"
+      className="fixed inset-0 z-[150] flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden urban-shell text-white"
     >
       {/* ── Header ── */}
-      <div className="mx-3 sm:mx-4 mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 flex-shrink-0 urban-surface rounded-3xl">
+      <div className="mx-3 mt-3 flex flex-shrink-0 flex-wrap items-center justify-between gap-2 rounded-3xl px-3 py-2.5 sm:mx-4 sm:mt-4 sm:gap-3 sm:px-5 sm:py-4 urban-surface">
         <div className="flex min-w-0 items-center gap-3">
           <div className={`w-2 h-2 rounded-full ${qualityLevel === "high" ? "bg-emerald-400" : qualityLevel === "medium" ? "bg-amber-400" : "bg-red-400"} animate-pulse`} />
           <span className="text-xs text-zinc-400 font-mono">{fmtDuration(duration)}</span>
@@ -287,12 +296,12 @@ export default function CallRoom({
           {type === "video" ? "Video Call" : "Voice Call"}
         </div>
         <div className="text-xs text-zinc-500">
-          {callParticipants.length} / 10
+          {participantCount} / 10
         </div>
       </div>
 
       {/* ── Video / Voice area ── */}
-      <div className="flex-1 relative overflow-hidden px-3 sm:px-5 pb-3 pt-3 sm:pt-4">
+      <div className="relative min-h-0 flex-1 overflow-hidden px-3 pb-2 pt-2 sm:px-5 sm:pb-3 sm:pt-4">
         {error ? (
           <div className="flex flex-col items-center justify-center h-full gap-3">
             <p className="text-red-400 text-sm text-center">{error}</p>
@@ -303,12 +312,12 @@ export default function CallRoom({
           </div>
         ) : isVoice ? (
           /* Voice call — avatar grid */
-          <div className="h-full call-stage rounded-[2rem] flex flex-col items-center justify-center gap-6 border border-white/10">
-            <div className="flex flex-wrap items-center justify-center gap-6">
+          <div className="h-full call-stage rounded-[1.5rem] sm:rounded-[2rem] flex flex-col items-center justify-center gap-3 border border-white/10 p-3 sm:gap-6">
+            <div className="flex max-h-full flex-wrap items-center justify-center gap-4 overflow-hidden sm:gap-6">
               {/* Local */}
               <div className="flex flex-col items-center gap-2">
                 <div className="relative">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center text-3xl font-bold ring-4 ring-teal-300/25">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center text-2xl font-bold ring-4 ring-teal-300/25 sm:h-20 sm:w-20 sm:text-3xl">
                     {/* Would use user avatar here */}
                     Me
                   </div>
@@ -328,7 +337,7 @@ export default function CallRoom({
                 <div key={p._id} className="flex flex-col items-center gap-2">
                   <div className="relative">
                     <img src={p.avatar || "/avatar.png"}
-                      className="w-20 h-20 rounded-full object-cover ring-4 ring-white/10" alt="" />
+                      className="w-16 h-16 rounded-full object-cover ring-4 ring-white/10 sm:h-20 sm:w-20" alt="" />
                   </div>
                   <span className="text-xs text-zinc-400">{p.name}</span>
                 </div>
@@ -342,11 +351,11 @@ export default function CallRoom({
           </div>
         ) : (
           /* Video call layout */
-          <div className="h-full max-h-[70vh] relative call-stage rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 overflow-hidden p-2 sm:p-3">
+          <div className="h-full relative call-stage rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 overflow-hidden p-2 sm:p-3">
             {/* Main grid */}
             {totalRemote === 0 ? (
               /* Waiting for others */
-              <div className="h-full max-h-[64vh] flex items-center justify-center">
+              <div className="h-full flex items-center justify-center">
                 <VideoTile stream={localStream} label="You" isLocal isMuted={isMuted} isCamOff={isCamOff} />
                 <div className="absolute left-1/2 top-8 -translate-x-1/2 rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs font-bold uppercase tracking-widest text-zinc-400 backdrop-blur-xl">
                   Waiting for others
@@ -354,7 +363,7 @@ export default function CallRoom({
               </div>
             ) : totalRemote === 1 ? (
               /* 1-to-1 — remote fills, local is pip */
-              <div className="h-full max-h-[64vh] relative">
+              <div className="h-full relative">
                 <VideoTile
                   stream={remoteEntries[0][1]}
                   label={callParticipants.find((p) => p._id !== userId)?.name || "Participant"}
@@ -387,9 +396,9 @@ export default function CallRoom({
       </div>
 
       {/* ── Controls bar ── */}
-      <div className="flex-shrink-0 px-3 sm:px-6 pb-4 sm:pb-8 pt-3 sm:pt-4">
-        <div className="urban-surface rounded-[1.5rem] sm:rounded-[2rem] px-3 sm:px-6 py-3 sm:py-4 max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+      <div className="flex-shrink-0 px-3 pb-3 pt-2 sm:px-6 sm:pb-8 sm:pt-4">
+        <div className="urban-surface mx-auto max-w-4xl rounded-[1.5rem] px-3 py-3 sm:rounded-[2rem] sm:px-6 sm:py-4">
+          <div className="grid grid-cols-3 items-start gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
             <ControlButton
               onClick={toggleMute} active={isMuted}
               label={isMuted ? "Unmute" : "Mute"}

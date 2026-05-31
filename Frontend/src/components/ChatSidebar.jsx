@@ -315,6 +315,7 @@ function ChatSidebar({ onSelectChat, selectedChatId, onChatDeleted, onCallAgain 
     socket.on("receive-message",          onReceive);
     socket.on("messages-read",            onRead);
     socket.on("chat-deleted",             onChatDel);
+    socket.emit("get-online-users");
 
     return () => {
       // Pass handler refs — this only removes OUR listeners, not ChatWindow's

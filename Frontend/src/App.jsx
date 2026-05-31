@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -19,6 +19,84 @@ import CallRoom from "./components/CallRoom";
 
 import "./App.css";
 
+const routeMeta = [
+  {
+    match: (path) => path === "/",
+    title: "Urban Loop - One City. One Loop.",
+    description: "Urban Loop connects your city through local discovery, communities, chat, calls, posts, places, and events.",
+  },
+  {
+    match: (path) => path === "/login",
+    title: "Login | Urban Loop",
+    description: "Sign in to Urban Loop to continue discovering your city, communities, chats, calls, and local updates.",
+  },
+  {
+    match: (path) => path === "/register",
+    title: "Register | Urban Loop",
+    description: "Create an Urban Loop account and join your local city community.",
+  },
+  {
+    match: (path) => path === "/feed",
+    title: "Feed | Urban Loop",
+    description: "View posts, updates, and activity from your local Urban Loop network.",
+  },
+  {
+    match: (path) => path.startsWith("/profile"),
+    title: "Profile | Urban Loop",
+    description: "View profiles, posts, followers, settings, and local identity on Urban Loop.",
+  },
+  {
+    match: (path) => path.startsWith("/chat"),
+    title: "Chat | Urban Loop",
+    description: "Chat in real time, send media, create groups, share polls, and start calls on Urban Loop.",
+  },
+  {
+    match: (path) => path === "/communities",
+    title: "Communities | Urban Loop",
+    description: "Explore, create, join, and manage city communities on Urban Loop.",
+  },
+  {
+    match: (path) => path.startsWith("/communities/"),
+    title: "Community Room | Urban Loop",
+    description: "Connect inside an Urban Loop community room with messages, members, media, and polls.",
+  },
+  {
+    match: (path) => path.startsWith("/explore/"),
+    title: "Explore City | Urban Loop",
+    description: "Explore weather, news, must-visit places, heritage spots, and upcoming events in your city.",
+  },
+];
+
+function RouteMetadata() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const meta = routeMeta.find((item) => item.match(location.pathname)) || {
+      title: "Urban Loop",
+      description: "Urban Loop is a city-first social platform for local discovery, communities, chat, calls, posts, places, and events.",
+    };
+
+    document.title = meta.title;
+
+    const descriptionTag = document.querySelector('meta[name="description"]');
+    if (descriptionTag) descriptionTag.setAttribute("content", meta.description);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", meta.title);
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) ogDescription.setAttribute("content", meta.description);
+
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) twitterTitle.setAttribute("content", meta.title);
+
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescription) twitterDescription.setAttribute("content", meta.description);
+  }, [location.pathname]);
+
+  return null;
+}
+
 function AppInner() {
   const [activeCall, setActiveCall] = useState(null);
   const { user, theme, loading } = useAuth(); // Access both theme and loading state
@@ -30,7 +108,7 @@ function AppInner() {
       type: callData.type,
       callType: callData.callType,
       chatId: callData.chatId,
-      participants: [],
+      participants: callData.participants || [],
       isInitiator: false,
     });
   };
@@ -95,6 +173,7 @@ function AppInner() {
       className="min-h-screen transition-colors duration-500"
       style={{ backgroundColor: isDark ? "#0F172A" : "#F8FAFC" }}
     >
+      <RouteMetadata />
       <IncomingCallNotification
         onAccept={handleAcceptCall}
         onReject={() => {}}
