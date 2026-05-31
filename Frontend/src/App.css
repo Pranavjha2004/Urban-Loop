@@ -140,16 +140,18 @@ body {
 .floating-nav {
   position: fixed;
   top: max(1rem, env(safe-area-inset-top));
-  left: 50%;
+  left: 0;
+  right: 0;
   z-index: 50;
   width: fit-content;
   max-width: calc(100vw - 1rem);
-  transform: translateX(-50%);
+  margin-inline: auto;
 }
 
 .floating-nav--chat-docked {
   left: calc(clamp(20rem, 25vw, 24rem) - 4.4rem);
-  transform: none;
+  right: auto;
+  margin-inline: 0;
 }
 
 .floating-nav__rail {
