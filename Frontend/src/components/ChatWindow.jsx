@@ -978,6 +978,7 @@ function ChatWindow({ chat, onDeleteChat, onBack }) {
       from: user._id,
       callerName: user.name,
       callerAvatar: user.avatar,
+      participants,
     });
 
     setActiveCall({ roomId, type, callType, participants });

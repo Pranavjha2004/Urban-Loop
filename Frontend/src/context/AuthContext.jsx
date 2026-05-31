@@ -53,8 +53,18 @@ const toggleTheme = () => {
   // CONNECT USER TO SOCKET
   useEffect(() => {
     if (!user?._id) return;
+    const announceOnline = () => {
+      socket.emit("user-online", user._id);
+      socket.emit("get-online-users");
+    };
+
     socket.connect();
-    socket.emit("user-online", user._id);
+    announceOnline();
+    socket.on("connect", announceOnline);
+
+    return () => {
+      socket.off("connect", announceOnline);
+    };
   }, [user]);
 
   return (

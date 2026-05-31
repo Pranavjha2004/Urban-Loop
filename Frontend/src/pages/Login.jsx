@@ -187,7 +187,15 @@ function Login() {
             <h2 className={`text-4xl font-semibold mb-2 tracking-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>Sign in</h2>
             <p className="text-zinc-500 mb-10 font-medium">Enter your details to continue.</p>
 
-            <div className="space-y-6">
+            <div
+              className="space-y-6"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !loading) {
+                  e.preventDefault();
+                  handleLogin();
+                }
+              }}
+            >
               {/* Email */}
               <div className="group space-y-2">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 ml-1 transition-colors group-focus-within:text-indigo-500">Email</label>

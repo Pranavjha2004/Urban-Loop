@@ -118,7 +118,15 @@ function Register() {
             <p className="text-zinc-500 mb-10 font-medium">Join the Loop in a few seconds.</p>
 
             {!success ? (
-              <div className="space-y-4">
+              <div
+                className="space-y-4"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !loading) {
+                    e.preventDefault();
+                    handleRegister();
+                  }
+                }}
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />

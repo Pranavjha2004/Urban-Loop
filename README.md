@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./Frontend/public/favicon.svg" alt="Urban Loop logo" width="96" height="96" />
+</p>
+
 # Urban Loop
 
 Urban Loop is a full-stack local social platform for city communities. It combines a social feed, user profiles, real-time chat, voice and video calls, groups, community rooms, polls, local exploration, places, events, and a responsive animated UI with global light and dark themes.
@@ -626,4 +630,4 @@ node -e "import('./routes/communityRoutes.js').then(()=>console.log('community r
 
 ## Credits
 
-Developed with love by Pranav Jha.
+Developed with love by [Pranav Jha](https://www.linkedin.com/in/pranav-kumar-jha-2669722b5/) and Dolamani Meher.

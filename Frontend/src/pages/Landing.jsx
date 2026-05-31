@@ -517,7 +517,18 @@ function Landing() {
             <div className={`relative mt-10 flex flex-col gap-3 border-t pt-5 text-xs sm:flex-row sm:items-center sm:justify-between ${
               isDark ? "border-white/10 text-zinc-500" : "border-slate-200 text-slate-500"
             }`}>
-              <span>Developed with love 💓 Pranav Jha</span>
+              <span>
+                Developed with love 💓{" "}
+                <a
+                  href="https://www.linkedin.com/in/pranav-kumar-jha-2669722b5/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-bold text-teal-400 transition-colors hover:text-sky-400"
+                >
+                  Pranav Jha
+                </a>
+                {" "}and Dolamani Meher
+              </span>
               <span>Urban Loop © {new Date().getFullYear()}</span>
             </div>
           </div>
