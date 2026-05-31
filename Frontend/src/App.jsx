@@ -13,6 +13,7 @@ import ChatPage from "./pages/ChatPage";
 import CommunitiesPage from "./pages/CommunitiesPage";
 import CommunityRoom from "./pages/CommunityRoom";
 import Explore from "./pages/Explore";
+import AdminPanel from "./pages/AdminPanel";
 
 import IncomingCallNotification from "./components/IncomingCallNotification";
 import CallRoom from "./components/CallRoom";
@@ -64,6 +65,11 @@ const routeMeta = [
     match: (path) => path.startsWith("/explore/"),
     title: "Explore City | Urban Loop",
     description: "Explore weather, news, must-visit places, heritage spots, and upcoming events in your city.",
+  },
+  {
+    match: (path) => path === "/admin",
+    title: "Admin Panel | Urban Loop",
+    description: "Urban Loop admin dashboard for platform analytics, moderation, users, posts, calls, and activity insights.",
   },
 ];
 
@@ -255,6 +261,14 @@ function AppInner() {
           element={
             <ProtectedRoute>
               <Explore />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPanel />
             </ProtectedRoute>
           }
         />

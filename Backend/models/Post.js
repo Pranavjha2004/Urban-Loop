@@ -42,6 +42,21 @@ const postSchema = new mongoose.Schema(
     city: {
       type: String,
     },
+
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    deleteReason: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

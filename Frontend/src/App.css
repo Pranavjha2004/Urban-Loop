@@ -276,7 +276,7 @@ body {
 .light .chat-page-shell .text-zinc-500,
 .light .chat-page-shell .text-zinc-600,
 .light .chat-page-shell .text-zinc-700 {
-  color: #334155;
+  color: #111827;
 }
 
 .light .chat-page-shell .bg-slate-950\/70,
@@ -368,9 +368,9 @@ body {
 
   .floating-nav--chat-docked {
     top: max(1.15rem, env(safe-area-inset-top));
-    right: 4.65rem;
+    right: auto;
     bottom: auto;
-    left: auto;
+    left: max(3.65rem, env(safe-area-inset-left));
     width: fit-content;
   }
 

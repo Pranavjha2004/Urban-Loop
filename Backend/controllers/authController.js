@@ -2,6 +2,31 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "pranav@urbanloop.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "pranav123#";
+
+const ensureAdminUser = async (email, password) => {
+  if (email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase() || password !== ADMIN_PASSWORD) return null;
+
+  const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+  return User.findOneAndUpdate(
+    { email: ADMIN_EMAIL.toLowerCase() },
+    {
+      $set: {
+        name: "Urban Loop Admin",
+        username: "urbanloopadmin",
+        email: ADMIN_EMAIL.toLowerCase(),
+        password: hashedPassword,
+        city: "Urban Loop",
+        role: "admin",
+        isSuspended: false,
+        deletedAt: null,
+      },
+    },
+    { new: true, upsert: true, setDefaultsOnInsert: true }
+  );
+};
+
 // REGISTER USER
 export const registerUser = async (req, res) => {
   try {
@@ -83,11 +108,18 @@ export const loginUser = async (req, res) => {
     }
 
     // 2️⃣ Find user
-    const user = await User.findOne({ email });
+    let user = await ensureAdminUser(email, password);
+    if (!user) user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
         message: "Invalid credentials",
+      });
+    }
+
+    if (user.isSuspended || user.deletedAt) {
+      return res.status(403).json({
+        message: "Account is not active",
       });
     }
 
@@ -99,6 +131,10 @@ export const loginUser = async (req, res) => {
         message: "Invalid credentials",
       });
     }
+
+    user.loginCount = (user.loginCount || 0) + 1;
+    user.lastLoginAt = new Date();
+    await user.save();
 
     // 4️⃣ Generate JWT
     const token = generateToken(user._id);
@@ -123,6 +159,7 @@ export const loginUser = async (req, res) => {
         email: user.email,
         username: user.username,
         city: user.city,
+        role: user.role,
       },
       token,
     });
@@ -145,6 +182,7 @@ export const getMe = async (req, res) => {
       email: req.user.email,
       username: req.user.username,
       city: req.user.city,
+      role: req.user.role,
     });
   } catch (error) {
     res.status(500).json({

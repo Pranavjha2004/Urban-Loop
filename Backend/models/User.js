@@ -101,6 +101,29 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+
+    loginCount: {
+      type: Number,
+      default: 0,
+    },
+
+    lastLoginAt: {
+      type: Date,
+    },
+
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
+
+    suspendedAt: {
+      type: Date,
+    },
+
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
