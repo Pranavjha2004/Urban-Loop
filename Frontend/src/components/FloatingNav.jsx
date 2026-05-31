@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, Compass, User, MessageCircle, Moon, Sun, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import API from "../services/api";
 import socket from "../socket";
 import { useAuth } from "../context/AuthContext";
@@ -23,22 +23,27 @@ function FloatingNav() {
     { name: "Me", icon: User, path: "/profile/me" },
   ];
 
-  useEffect(() => {
-    const fetchUnread = async () => {
-      try {
-        const res = await API.get("/messages/unread/count");
-        setUnreadCount(res.data.count);
-      } catch (err) { console.log(err); }
-    };
-    fetchUnread();
+  const fetchUnread = useCallback(async () => {
+    try {
+      const res = await API.get("/messages/unread/count");
+      setUnreadCount(res.data.count || 0);
+    } catch (err) { console.log(err); }
   }, []);
+
+  useEffect(() => {
+    fetchUnread();
+  }, [fetchUnread, location.pathname]);
 
   useEffect(() => {
     if (!user) return;
     socket.emit("user-online", user._id);
-    socket.on("new-message-notification", () => setUnreadCount(prev => prev + 1));
-    return () => socket.off("new-message-notification");
-  }, [user]);
+    socket.on("new-message-notification", fetchUnread);
+    socket.on("messages-read", fetchUnread);
+    return () => {
+      socket.off("new-message-notification", fetchUnread);
+      socket.off("messages-read", fetchUnread);
+    };
+  }, [user, fetchUnread]);
 
   useEffect(() => {
     setExpanded(!location.pathname.startsWith("/chat"));

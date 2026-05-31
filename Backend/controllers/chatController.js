@@ -118,6 +118,29 @@ export const getUserChats = async (req, res) => {
 // ─────────────────────────────────────────────
 // DELETE /api/chat/:chatId
 // ─────────────────────────────────────────────
+export const getChatById = async (req, res) => {
+  try {
+    const chat = await Chat.findById(req.params.chatId)
+      .populate("participants", "name avatar _id username")
+      .populate({
+        path: "lastMessage",
+        populate: { path: "sender", select: "name avatar _id" },
+      });
+
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
+
+    const isMember = chat.participants.some(
+      (p) => p._id.toString() === req.user._id.toString()
+    );
+    if (!isMember) return res.status(403).json({ message: "Not a participant" });
+
+    res.json(chat);
+  } catch (err) {
+    console.error("getChatById:", err);
+    res.status(500).json({ message: "Failed to fetch chat" });
+  }
+};
+
 export const deleteChat = async (req, res) => {
   try {
     const chat = await Chat.findById(req.params.chatId);

@@ -58,6 +58,7 @@ export const registerUser = async (req, res) => {
         email: user.email,
         city: user.city,
       },
+      token,
     });
   } catch (error) {
     res.status(500).json({
@@ -121,7 +122,9 @@ export const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         username: user.username,
+        city: user.city,
       },
+      token,
     });
 
   } catch (error) {

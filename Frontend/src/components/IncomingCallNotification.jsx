@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import socket from "../socket";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Mount this ONCE at App.jsx level — it listens globally for incoming calls
@@ -11,6 +12,7 @@ import socket from "../socket";
  *   onReject()         — called when user declines
  */
 export default function IncomingCallNotification({ onAccept, onReject }) {
+  const { user } = useAuth();
   const [incomingCall, setIncomingCall] = useState(null);
   const audioRef       = useRef(null);
   const autoRejectRef  = useRef(null);
@@ -74,7 +76,7 @@ export default function IncomingCallNotification({ onAccept, onReject }) {
     socket.emit("call-answer", {
       roomId: incomingCall.roomId,
       to:     incomingCall.from,
-      from:   incomingCall.to, // will be set by parent via useAuth
+      from:   user?._id,
     });
     onAccept?.(incomingCall);
     setIncomingCall(null);
@@ -87,7 +89,7 @@ export default function IncomingCallNotification({ onAccept, onReject }) {
       socket.emit("call-rejected", {
         roomId: call.roomId,
         to:     call.from,
-        from:   call.to,
+        from:   user?._id,
       });
     }
     onReject?.();
