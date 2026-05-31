@@ -15,8 +15,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await API.get("/auth/me");
       setUser(data);
+      return data;
     } catch {
       setUser(null);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -59,6 +61,7 @@ const toggleTheme = () => {
       value={{
         user,
         loading,
+        setUser,
         checkAuth,
         socket,
         theme,        // Exported
