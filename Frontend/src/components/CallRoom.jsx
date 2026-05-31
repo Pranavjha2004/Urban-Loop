@@ -24,8 +24,13 @@ function VideoTile({ stream, label, isLocal, isMuted, isCamOff, avatar, isSmall 
   }, [stream]);
 
   return (
-    <div className={`relative bg-zinc-900 rounded-2xl overflow-hidden flex items-center justify-center
-      ${isSmall ? "w-28 h-20 md:w-36 md:h-28" : "w-full h-full"}`}>
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`relative bg-slate-900/90 rounded-[2rem] overflow-hidden flex items-center justify-center border border-white/10 shadow-2xl
+      ${isSmall ? "w-28 h-20 md:w-40 md:h-28" : "w-full h-full min-h-[180px] max-h-[68vh]"}`}
+    >
       {stream && !isCamOff ? (
         <video
           ref={videoRef}
@@ -33,20 +38,21 @@ function VideoTile({ stream, label, isLocal, isMuted, isCamOff, avatar, isSmall 
           className={`w-full h-full object-cover ${isLocal ? "scale-x-[-1]" : ""}`}
         />
       ) : (
-        <div className="flex flex-col items-center justify-center gap-2">
+        <div className="flex flex-col items-center justify-center gap-3">
           {avatar ? (
-            <img src={avatar} className="w-14 h-14 rounded-full object-cover" alt="" />
+            <img src={avatar} className="w-20 h-20 rounded-full object-cover ring-4 ring-white/10" alt="" />
           ) : (
-            <div className="w-14 h-14 rounded-full bg-zinc-700 flex items-center justify-center text-2xl font-bold text-white">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center text-3xl font-bold text-white ring-4 ring-white/10">
               {label?.charAt(0)?.toUpperCase()}
             </div>
           )}
+          <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">Camera off</span>
         </div>
       )}
 
       {/* Name + mute badge */}
-      <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-between">
-        <span className="text-white text-[10px] font-semibold truncate">{label}</span>
+      <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/75 to-transparent flex items-center justify-between">
+        <span className="text-white text-xs font-bold truncate">{label}</span>
         {isMuted && (
           <span className="bg-red-500 rounded-full p-0.5">
             <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,7 +70,7 @@ function VideoTile({ stream, label, isLocal, isMuted, isCamOff, avatar, isSmall 
           </span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -77,12 +83,12 @@ function ControlButton({ onClick, active, danger, disabled, icon, label, classNa
       disabled={disabled}
       className={`flex flex-col items-center gap-1.5 group disabled:opacity-40 ${className}`}
     >
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg
         ${danger
           ? "bg-red-500 hover:bg-red-400 text-white"
           : active
             ? "bg-white text-zinc-900 hover:bg-zinc-100"
-            : "bg-white/10 hover:bg-white/20 text-white border border-white/10"}`}>
+            : "bg-slate-800/80 hover:bg-slate-700 text-white border border-white/10"}`}>
         {icon}
       </div>
       <span className="text-[10px] text-zinc-400 font-medium">{label}</span>
@@ -113,7 +119,7 @@ function AddParticipantModal({ chatId, currentParticipantIds, onInvite, onClose 
     >
       <motion.div
         initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95 }}
-        className="w-full max-w-sm bg-zinc-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl"
+        className="w-full max-w-sm urban-surface rounded-3xl overflow-hidden shadow-2xl"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
           <h3 className="text-sm font-bold text-white">Add Participant</h3>
@@ -130,7 +136,7 @@ function AddParticipantModal({ chatId, currentParticipantIds, onInvite, onClose 
           ) : contacts.map((u) => (
             <button key={u._id} onClick={() => toggle(u._id)}
               className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
-                selected.includes(u._id) ? "bg-purple-600/20 border border-purple-500/30" : "hover:bg-white/5 border border-transparent"
+                selected.includes(u._id) ? "bg-teal-400/15 border border-teal-300/25" : "hover:bg-white/5 border border-transparent"
               }`}>
               <img src={u.avatar || "/avatar.png"} className="w-9 h-9 rounded-full object-cover" alt="" />
               <div className="flex-1 text-left">
@@ -152,7 +158,7 @@ function AddParticipantModal({ chatId, currentParticipantIds, onInvite, onClose 
           <button
             onClick={() => { onInvite(selected); onClose(); }}
             disabled={selected.length === 0}
-            className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 text-white text-sm font-bold transition-all"
+            className="w-full py-2.5 rounded-xl urban-pill disabled:opacity-30 text-sm font-bold transition-all"
           >
             Invite {selected.length > 0 ? `(${selected.length})` : ""}
           </button>
@@ -251,9 +257,9 @@ export default function CallRoom({
   const gridClass = () => {
     if (totalRemote === 0) return "grid-cols-1";
     if (totalRemote === 1) return "grid-cols-1 md:grid-cols-2";
-    if (totalRemote <= 3)  return "grid-cols-2";
-    if (totalRemote <= 8)  return "grid-cols-2 md:grid-cols-3";
-    return "grid-cols-3 md:grid-cols-4";
+    if (totalRemote <= 3)  return "grid-cols-1 sm:grid-cols-2";
+    if (totalRemote <= 8)  return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
+    return "grid-cols-2 md:grid-cols-3 xl:grid-cols-4";
   };
 
   // ── Voice call layout vs video ─────────────────────────────────────────────
@@ -262,11 +268,11 @@ export default function CallRoom({
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[150] flex flex-col bg-zinc-950 text-white"
+      className="fixed inset-0 z-[150] flex flex-col urban-shell text-white"
     >
       {/* ── Header ── */}
-      <div className="flex items-center justify-between px-5 py-4 flex-shrink-0">
-        <div className="flex items-center gap-3">
+      <div className="mx-3 sm:mx-4 mt-3 sm:mt-4 flex flex-wrap items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 flex-shrink-0 urban-surface rounded-3xl">
+        <div className="flex min-w-0 items-center gap-3">
           <div className={`w-2 h-2 rounded-full ${qualityLevel === "high" ? "bg-emerald-400" : qualityLevel === "medium" ? "bg-amber-400" : "bg-red-400"} animate-pulse`} />
           <span className="text-xs text-zinc-400 font-mono">{fmtDuration(duration)}</span>
           {qualityLevel !== "high" && (
@@ -286,7 +292,7 @@ export default function CallRoom({
       </div>
 
       {/* ── Video / Voice area ── */}
-      <div className="flex-1 relative overflow-hidden px-3 pb-3">
+      <div className="flex-1 relative overflow-hidden px-3 sm:px-5 pb-3 pt-3 sm:pt-4">
         {error ? (
           <div className="flex flex-col items-center justify-center h-full gap-3">
             <p className="text-red-400 text-sm text-center">{error}</p>
@@ -297,12 +303,12 @@ export default function CallRoom({
           </div>
         ) : isVoice ? (
           /* Voice call — avatar grid */
-          <div className="h-full flex flex-col items-center justify-center gap-6">
+          <div className="h-full call-stage rounded-[2rem] flex flex-col items-center justify-center gap-6 border border-white/10">
             <div className="flex flex-wrap items-center justify-center gap-6">
               {/* Local */}
               <div className="flex flex-col items-center gap-2">
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-zinc-700 flex items-center justify-center text-3xl font-bold ring-4 ring-purple-500/40">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center text-3xl font-bold ring-4 ring-teal-300/25">
                     {/* Would use user avatar here */}
                     Me
                   </div>
@@ -336,37 +342,40 @@ export default function CallRoom({
           </div>
         ) : (
           /* Video call layout */
-          <div className="h-full relative">
+          <div className="h-full max-h-[70vh] relative call-stage rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 overflow-hidden p-2 sm:p-3">
             {/* Main grid */}
             {totalRemote === 0 ? (
               /* Waiting for others */
-              <div className="h-full flex items-center justify-center">
+              <div className="h-full max-h-[64vh] flex items-center justify-center">
                 <VideoTile stream={localStream} label="You" isLocal isMuted={isMuted} isCamOff={isCamOff} />
+                <div className="absolute left-1/2 top-8 -translate-x-1/2 rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs font-bold uppercase tracking-widest text-zinc-400 backdrop-blur-xl">
+                  Waiting for others
+                </div>
               </div>
             ) : totalRemote === 1 ? (
               /* 1-to-1 — remote fills, local is pip */
-              <div className="h-full relative">
+              <div className="h-full max-h-[64vh] relative">
                 <VideoTile
                   stream={remoteEntries[0][1]}
                   label={callParticipants.find((p) => p._id !== userId)?.name || "Participant"}
                   isLocal={false} isMuted={false}
                 />
                 {/* PiP */}
-                <div className="absolute bottom-4 right-4 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 rounded-[1.25rem] sm:rounded-[1.5rem] overflow-hidden shadow-2xl border border-white/20 ring-4 ring-black/20">
                   <VideoTile stream={localStream} label="You" isLocal isMuted={isMuted} isCamOff={isCamOff} isSmall />
                 </div>
               </div>
             ) : (
               /* Group grid */
-              <div className={`grid ${gridClass()} gap-2 h-full`}>
+              <div className={`grid ${gridClass()} gap-3 h-full`}>
                 {/* Local tile */}
-                <div className="min-h-[140px]">
+                  <div className="min-h-[120px] max-h-[34vh]">
                   <VideoTile stream={localStream} label="You" isLocal isMuted={isMuted} isCamOff={isCamOff} />
                 </div>
                 {remoteEntries.map(([sid, stream]) => {
                   const p = callParticipants.find((x) => x._id !== userId) || {};
                   return (
-                    <div key={sid} className="min-h-[140px]">
+                    <div key={sid} className="min-h-[120px] max-h-[34vh]">
                       <VideoTile stream={stream} label={p.name || "Participant"} isLocal={false} />
                     </div>
                   );
@@ -378,9 +387,9 @@ export default function CallRoom({
       </div>
 
       {/* ── Controls bar ── */}
-      <div className="flex-shrink-0 px-6 pb-8 pt-4">
-        <div className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-3xl px-6 py-4">
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+      <div className="flex-shrink-0 px-3 sm:px-6 pb-4 sm:pb-8 pt-3 sm:pt-4">
+        <div className="urban-surface rounded-[1.5rem] sm:rounded-[2rem] px-3 sm:px-6 py-3 sm:py-4 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
             <ControlButton
               onClick={toggleMute} active={isMuted}
               label={isMuted ? "Unmute" : "Mute"}

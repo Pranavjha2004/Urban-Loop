@@ -52,14 +52,14 @@ export default function CreatePollModal({ onClose, onSubmit, submitting }) {
         animate={{ scale: 1,    y: 0,  opacity: 1 }}
         exit={{    scale: 0.95, y: 16, opacity: 0 }}
         transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-md urban-surface rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         style={{ maxHeight: "90vh" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.07] flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-purple-600/20 border border-purple-500/25 flex items-center justify-center">
-              <BarChart2 size={16} className="text-purple-400" />
+            <div className="w-8 h-8 rounded-xl bg-teal-400/15 border border-teal-300/25 flex items-center justify-center">
+              <BarChart2 size={16} className="text-teal-300" />
             </div>
             <h2 className="text-sm font-bold text-white">Create Poll</h2>
           </div>
@@ -83,7 +83,7 @@ export default function CreatePollModal({ onClose, onSubmit, submitting }) {
                 placeholder="Ask something…"
                 rows={2}
                 maxLength={200}
-                className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+                className="w-full urban-input rounded-xl px-4 py-3 text-sm placeholder:text-zinc-600 resize-none"
               />
             </div>
 
@@ -115,7 +115,7 @@ export default function CreatePollModal({ onClose, onSubmit, submitting }) {
                         }}
                         placeholder={`Option ${i + 1}`}
                         maxLength={100}
-                        className="flex-1 bg-white/[0.04] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all"
+                        className="flex-1 urban-input rounded-xl px-3.5 py-2.5 text-sm placeholder:text-zinc-600"
                       />
                       <button
                         type="button"
@@ -135,7 +135,7 @@ export default function CreatePollModal({ onClose, onSubmit, submitting }) {
                 <button
                   type="button"
                   onClick={addOption}
-                  className="mt-2 flex items-center gap-2 text-xs text-zinc-500 hover:text-purple-400 transition-colors px-1 py-1"
+                className="mt-2 flex items-center gap-2 text-xs text-zinc-500 hover:text-teal-300 transition-colors px-1 py-1"
                 >
                   <Plus size={14} /> Add option
                 </button>
@@ -151,7 +151,7 @@ export default function CreatePollModal({ onClose, onSubmit, submitting }) {
               <button
                 type="button"
                 onClick={() => setAllowMultiple((v) => !v)}
-                className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${allowMultiple ? "bg-purple-600" : "bg-zinc-700"}`}
+                className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${allowMultiple ? "bg-teal-500" : "bg-zinc-700"}`}
               >
                 <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${allowMultiple ? "left-[22px]" : "left-0.5"}`} />
               </button>
@@ -175,7 +175,7 @@ export default function CreatePollModal({ onClose, onSubmit, submitting }) {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-900/40"
+              className="w-full py-3 rounded-2xl urban-pill disabled:opacity-30 disabled:cursor-not-allowed text-sm font-bold transition-all flex items-center justify-center gap-2"
             >
               {submitting
                 ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

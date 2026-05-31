@@ -38,6 +38,7 @@ export const registerUser = async (req, res) => {
 
     // 5️⃣ Generate token
     const token = generateToken(user._id);
+    const cookieSameSite = process.env.COOKIE_SAMESITE || (process.env.NODE_ENV === "production" ? "None" : "Strict");
 
     // 6️⃣ Send response
     res.status(201).json({
@@ -98,7 +99,7 @@ export const loginUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true, // 🔥 prevents JS access (XSS safe)
       secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: "Strict", // CSRF protection
+      sameSite: cookieSameSite,
       maxAge: rememberMe
         ? 7 * 24 * 60 * 60 * 1000 // 7 days
         : undefined, // session cookie
@@ -144,11 +145,12 @@ export const getMe = async (req, res) => {
 // LOGOUT USER
 export const logoutUser = (req, res) => {
   try {
+    const cookieSameSite = process.env.COOKIE_SAMESITE || (process.env.NODE_ENV === "production" ? "None" : "Strict");
     res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0), // immediately expire
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: cookieSameSite,
     });
 
     res.status(200).json({

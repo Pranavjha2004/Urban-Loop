@@ -5,43 +5,53 @@ import socket from "../socket";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // --- New Theme State ---
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   const checkAuth = async () => {
-
     try {
-
       const { data } = await API.get("/auth/me");
-
       setUser(data);
-
     } catch {
-
       setUser(null);
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
   useEffect(() => {
     checkAuth();
   }, []);
 
+  // --- Theme Effect ---
+// Inside your AuthContext useEffect
+useEffect(() => {
+  const root = window.document.documentElement;
+  root.classList.remove("light", "dark");
+  
+  if (theme === "dark") {
+    root.classList.add("dark");
+    root.style.colorScheme = "dark"; // 👈 Add this
+  } else {
+    root.classList.add("light");
+    root.style.colorScheme = "light"; // 👈 Add this
+  }
+  
+  localStorage.setItem("theme", theme);
+}, [theme]);
+
+const toggleTheme = () => {
+  setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+};
+
   // CONNECT USER TO SOCKET
   useEffect(() => {
-
     if (!user?._id) return;
-
     socket.connect();
-
     socket.emit("user-online", user._id);
-
   }, [user]);
 
   return (
@@ -50,13 +60,14 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         checkAuth,
-        socket
+        socket,
+        theme,        // Exported
+        toggleTheme   // Exported
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-
 };
 
 export const useAuth = () => useContext(AuthContext);

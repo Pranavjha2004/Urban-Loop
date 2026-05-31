@@ -8,7 +8,6 @@ import {
 import API from "../services/api";
 import socket from "../socket";
 import { useAuth } from "../context/AuthContext";
-import StarBackground from "../components/StarBackground";
 import CreatePollModal from "../components/CreatePollModal";
 import PollBubble from "../components/PollBubble";
 
@@ -60,7 +59,7 @@ function SettingsPanel({ community, onClose, onUpdated, onDeleted }) {
     <motion.div
       initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
       transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      className="absolute inset-0 z-20 bg-zinc-950 flex flex-col"
+      className="absolute inset-0 z-20 urban-shell flex flex-col"
     >
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.07] flex-shrink-0">
         <h3 className="text-sm font-bold text-white">Community Settings</h3>
@@ -75,7 +74,7 @@ function SettingsPanel({ community, onClose, onUpdated, onDeleted }) {
           <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest block mb-1.5">Name</label>
           <input
             value={name} onChange={(e) => setName(e.target.value)} maxLength={80}
-            className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:outline-none focus:border-purple-500/50 transition-all"
+            className="w-full urban-input rounded-xl px-4 py-2.5 text-sm"
           />
         </div>
 
@@ -84,7 +83,7 @@ function SettingsPanel({ community, onClose, onUpdated, onDeleted }) {
           <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest block mb-1.5">Description</label>
           <textarea
             value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} rows={3}
-            className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-zinc-100 focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+            className="w-full urban-input rounded-xl px-4 py-2.5 text-sm resize-none"
           />
         </div>
 
@@ -138,7 +137,7 @@ function SettingsPanel({ community, onClose, onUpdated, onDeleted }) {
       <div className="p-5 border-t border-white/[0.07] space-y-2 flex-shrink-0">
         <button
           onClick={handleSave} disabled={saving || !name.trim()}
-          className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 text-white text-sm font-bold transition-all flex items-center justify-center"
+          className="w-full py-3 rounded-2xl urban-pill disabled:opacity-30 text-sm font-bold transition-all flex items-center justify-center"
         >
           {saving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Save Changes"}
         </button>
@@ -353,7 +352,7 @@ export default function CommunityRoom() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+    <div className="urban-shell flex items-center justify-center">
       <div className="w-8 h-8 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
     </div>
   );
@@ -361,13 +360,12 @@ export default function CommunityRoom() {
   if (!community) return null;
 
   return (
-    <div className="relative min-h-screen bg-zinc-950 text-white flex flex-col">
-      <StarBackground />
+    <div className="urban-shell text-white flex flex-col">
 
       <div className="relative z-10 flex flex-col h-screen">
 
         {/* ── Header ── */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-white/[0.07] backdrop-blur-2xl bg-black/40 flex-shrink-0 gap-3">
+        <header className="flex items-center justify-between px-4 py-3 border-b border-white/[0.07] backdrop-blur-2xl bg-slate-950/70 flex-shrink-0 gap-3">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <button onClick={() => navigate("/communities")} className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex-shrink-0">
               <ArrowLeft size={18} />
@@ -376,7 +374,7 @@ export default function CommunityRoom() {
             {community.avatar ? (
               <img src={community.avatar} className="w-9 h-9 rounded-xl object-cover flex-shrink-0" alt="" />
             ) : (
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                 {community.name?.slice(0, 1).toUpperCase()}
               </div>
             )}
@@ -414,7 +412,7 @@ export default function CommunityRoom() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   isMember
                     ? "bg-white/5 border-white/10 text-zinc-400 hover:border-red-500/40 hover:text-red-400"
-                    : "bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-900/30"
+                    : "urban-pill border-transparent text-white"
                 }`}
               >
                 {joiningLeave
@@ -441,7 +439,7 @@ export default function CommunityRoom() {
           {showMembers && (
             <motion.div
               initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              className="flex-shrink-0 border-b border-white/[0.07] bg-zinc-900/60 backdrop-blur-xl px-4 py-3 max-h-40 overflow-y-auto"
+              className="flex-shrink-0 border-b border-white/[0.07] bg-slate-900/70 backdrop-blur-xl px-4 py-3 max-h-40 overflow-y-auto"
             >
               <div className="flex items-center gap-3 flex-wrap">
                 {(community.members || []).map((m) => (
@@ -547,7 +545,7 @@ export default function CommunityRoom() {
                 whileTap={{ scale: 0.9 }}
                 onClick={handleSend}
                 disabled={sending || (!text.trim() && !imageFile)}
-                className="p-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 text-white transition-all flex-shrink-0"
+                className="p-2 rounded-xl urban-pill disabled:opacity-30 transition-all flex-shrink-0"
               >
                 {sending
                   ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -562,7 +560,7 @@ export default function CommunityRoom() {
             <footer className="flex-shrink-0 p-4 border-t border-white/[0.07]">
               <button
                 onClick={handleJoinLeave}
-                className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold transition-all"
+                className="w-full py-3 rounded-2xl urban-pill text-sm font-bold transition-all"
               >
                 Join to participate
               </button>

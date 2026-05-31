@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Camera, X } from "lucide-react";
 import API from "../services/api";
 
 function EditProfileModal({ user, onClose, onUpdated }) {
@@ -60,7 +61,7 @@ function EditProfileModal({ user, onClose, onUpdated }) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4 backdrop-blur-md"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -68,40 +69,49 @@ function EditProfileModal({ user, onClose, onUpdated }) {
       >
 
         <motion.div
-          className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 w-full max-w-md"
-          initial={{ scale: 0.85 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.85 }}
+          className="urban-surface rounded-[2rem] p-6 w-full max-w-md shadow-2xl"
+          initial={{ scale: 0.94, y: 18 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.94, y: 18 }}
           onClick={(e) => e.stopPropagation()}
         >
 
-          <h2 className="text-xl font-bold text-white mb-5">
-            Edit Profile
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-teal-400">Settings</p>
+              <h2 className="text-xl font-black text-white mt-1">Edit Profile</h2>
+            </div>
+            <button onClick={onClose} className="p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 transition-all">
+              <X size={18} />
+            </button>
+          </div>
 
           {/* Avatar */}
-          <div className="flex flex-col items-center gap-3 mb-4">
+          <div className="flex flex-col items-center gap-3 mb-5">
 
-            <img
-              src={preview || "/default-avatar.png"}
-              alt="avatar"
-              className="w-28 h-28 rounded-full object-cover border-2 border-purple-500 shadow-lg"
-            />
+            <label className="relative cursor-pointer group">
+              <img
+                src={preview || "/default-avatar.png"}
+                alt="avatar"
+                className="w-28 h-28 rounded-[2rem] object-cover border border-white/10 shadow-lg"
+              />
+              <span className="absolute inset-0 rounded-[2rem] bg-black/45 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-white">
+                <Camera size={24} />
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  setAvatar(file);
+                  setPreview(URL.createObjectURL(file));
+                }}
+                className="hidden"
+              />
+            </label>
 
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-
-                const file = e.target.files[0];
-                if (!file) return;
-
-                setAvatar(file);
-                setPreview(URL.createObjectURL(file));
-
-              }}
-              className="text-sm text-zinc-400"
-            />
+            <p className="text-xs font-semibold text-zinc-500">Click avatar to change photo</p>
 
           </div>
 
@@ -119,21 +129,21 @@ function EditProfileModal({ user, onClose, onUpdated }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Name"
-              className="w-full bg-zinc-800 p-2 rounded-lg text-white"
+              className="w-full urban-input px-4 py-3 rounded-2xl text-sm"
             />
 
             <input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              className="w-full bg-zinc-800 p-2 rounded-lg text-white"
+              className="w-full urban-input px-4 py-3 rounded-2xl text-sm"
             />
 
             <input
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="City"
-              className="w-full bg-zinc-800 p-2 rounded-lg text-white"
+              className="w-full urban-input px-4 py-3 rounded-2xl text-sm"
             />
 
             <textarea
@@ -141,7 +151,7 @@ function EditProfileModal({ user, onClose, onUpdated }) {
               onChange={(e) => setBio(e.target.value)}
               placeholder="Bio"
               rows={3}
-              className="w-full bg-zinc-800 p-2 rounded-lg text-white"
+              className="w-full urban-input px-4 py-3 rounded-2xl text-sm resize-none"
             />
 
           </div>
@@ -151,7 +161,7 @@ function EditProfileModal({ user, onClose, onUpdated }) {
 
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-zinc-700 rounded-lg"
+              className="px-5 py-3 rounded-2xl border border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 text-xs font-bold uppercase tracking-widest transition-all"
             >
               Cancel
             </button>
@@ -159,7 +169,7 @@ function EditProfileModal({ user, onClose, onUpdated }) {
             <button
               onClick={handleSave}
               disabled={loading}
-              className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700"
+              className="px-5 py-3 urban-pill rounded-2xl text-xs font-bold uppercase tracking-widest disabled:opacity-40"
             >
               {loading ? "Saving..." : "Save"}
             </button>

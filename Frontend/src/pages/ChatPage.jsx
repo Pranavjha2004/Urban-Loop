@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import API from "../services/api";
 import ChatSidebar from "../components/ChatSidebar";
 import ChatWindow  from "../components/ChatWindow";
+import FloatingNav from "../components/FloatingNav";
 import socket from "../socket";
 
 export default function ChatPage() {
@@ -43,9 +44,10 @@ export default function ChatPage() {
   }, []);
 
   return (
-    <div className="flex h-full bg-[#09090b] text-zinc-100 overflow-hidden">
+    <div className="urban-shell chat-page-shell flex h-screen text-zinc-100 overflow-hidden">
+      <FloatingNav />
       {/* ── Sidebar ── */}
-      <div className="w-80 xl:w-96 flex-shrink-0 border-r border-white/[0.06] bg-[#0c0c0f] flex flex-col">
+      <div className={`${selectedChat ? "hidden md:flex" : "flex"} chat-sidebar-panel w-full md:w-80 xl:w-96 flex-shrink-0 border-r border-white/[0.08] bg-slate-950/70 backdrop-blur-2xl flex-col`}>
         <ChatSidebar
           onSelectChat={setSelectedChat}
           selectedChatId={selectedChat?._id}
@@ -57,7 +59,7 @@ export default function ChatPage() {
       </div>
 
       {/* ── Main panel ── */}
-      <div className="flex-1 relative min-w-0">
+      <div className={`${selectedChat ? "flex" : "hidden md:flex"} chat-main-panel flex-1 relative min-w-0`}>
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div key="loading"
@@ -73,6 +75,7 @@ export default function ChatPage() {
               className="absolute inset-0">
               <ChatWindow
                 chat={selectedChat}
+                onBack={() => setSelectedChat(null)}
                 onDeleteChat={(chatId) => {
                   if (selectedChat?._id === chatId) setSelectedChat(null);
                 }}
@@ -81,8 +84,8 @@ export default function ChatPage() {
           ) : (
             <motion.div key="empty"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-700 select-none">
-              <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-zinc-500 select-none">
+              <svg className="w-16 h-16 urban-float text-teal-300/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1}
                   d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>

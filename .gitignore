@@ -5,6 +5,9 @@
 .env.*
 Backend/.env
 Frontend/.env
+!.env.example
+!Backend/.env.example
+!Frontend/.env.example
 
 # =========================
 # NODE MODULES

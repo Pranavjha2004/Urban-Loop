@@ -135,7 +135,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/90 backdrop-blur-md p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 backdrop-blur-md p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <motion.div
@@ -143,7 +143,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="bg-zinc-900 border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col w-full"
+        className="urban-surface rounded-[2rem] shadow-2xl overflow-hidden flex flex-col w-full"
         style={{
           maxWidth: step === 3 ? 820 : 500,
           maxHeight: "92vh",
@@ -165,7 +165,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
             {step === 2 && (
               <button
                 onClick={() => setStep(3)}
-                className="text-purple-400 hover:text-purple-300 font-black text-xs uppercase tracking-wider transition-colors"
+                className="text-teal-400 hover:text-teal-300 font-black text-xs uppercase tracking-wider transition-colors"
               >
                 Next
               </button>
@@ -196,9 +196,9 @@ export default function CreatePostModal({ onClose, onPosted }) {
             <motion.div
               animate={dragging ? { scale: 1.1 } : { scale: 1 }}
               className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-colors
-                ${dragging ? "bg-purple-600/20 border border-purple-500/40" : "bg-purple-600/10 border border-purple-500/20"}`}
+                ${dragging ? "bg-teal-500/20 border border-teal-400/40" : "bg-teal-500/10 border border-teal-400/20"}`}
             >
-              <Upload className={dragging ? "text-purple-400" : "text-purple-500"} size={32} />
+              <Upload className={dragging ? "text-teal-300" : "text-teal-400"} size={32} />
             </motion.div>
 
             <div className="text-center">
@@ -212,7 +212,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
 
             <button
               onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-              className="px-7 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold transition-all shadow-lg shadow-purple-900/40"
+              className="px-7 py-2.5 rounded-xl urban-pill text-sm font-bold transition-all"
             >
               Select from device
             </button>
@@ -243,7 +243,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
             </div>
 
             {/* Filter strip */}
-            <div className="flex-shrink-0 border-t border-white/5 bg-zinc-900 p-4">
+            <div className="flex-shrink-0 border-t border-white/5 bg-slate-950/20 p-4">
               <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-1">
                 {FILTERS.map((f) => (
                   <button
@@ -253,7 +253,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
                       ${filter.id === f.id ? "opacity-100" : "opacity-50 hover:opacity-80"}`}
                   >
                     <div className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all
-                      ${filter.id === f.id ? "border-purple-500 shadow-lg shadow-purple-900/50" : "border-transparent hover:border-white/20"}`}>
+                      ${filter.id === f.id ? "border-teal-400 shadow-lg shadow-teal-900/30" : "border-transparent hover:border-white/20"}`}>
                       <img
                         src={previewUrl}
                         alt={f.label}
@@ -262,7 +262,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
                       />
                     </div>
                     <span className={`text-[10px] font-bold uppercase tracking-tighter
-                      ${filter.id === f.id ? "text-purple-400" : "text-zinc-500"}`}>
+                      ${filter.id === f.id ? "text-teal-400" : "text-zinc-500"}`}>
                       {f.label}
                     </span>
                   </button>
@@ -305,7 +305,7 @@ export default function CreatePostModal({ onClose, onPosted }) {
                     alt={user.name}
                   />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                     {user?.name?.charAt(0)?.toUpperCase() || "U"}
                   </div>
                 )}
@@ -320,8 +320,8 @@ export default function CreatePostModal({ onClose, onPosted }) {
                   autoFocus
                   value={caption}
                   onChange={handleCaptionChange}
-                  placeholder="Encrypt a message…"
-                  className="w-full h-full min-h-[100px] bg-transparent text-sm text-zinc-300 placeholder:text-zinc-700 resize-none outline-none leading-relaxed"
+                  placeholder="Write a caption..."
+                  className="w-full h-full min-h-[100px] bg-transparent text-sm text-zinc-300 placeholder:text-zinc-600 resize-none outline-none leading-relaxed"
                 />
               </div>
 
@@ -356,14 +356,14 @@ export default function CreatePostModal({ onClose, onPosted }) {
                 <button
                   onClick={handlePost}
                   disabled={posting || !file}
-                  className="w-full py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500
-                    disabled:opacity-30 disabled:cursor-not-allowed text-white text-xs
+                  className="w-full py-3.5 rounded-2xl urban-pill
+                    disabled:opacity-30 disabled:cursor-not-allowed text-xs
                     font-black uppercase tracking-[0.2em] transition-all
-                    shadow-[0_0_20px_rgba(147,51,234,0.3)] flex items-center justify-center gap-2"
+                    flex items-center justify-center gap-2"
                 >
                   {posting
                     ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    : <><Send size={14} /> Transmit</>
+                    : <><Send size={14} /> Share Post</>
                   }
                 </button>
               </div>

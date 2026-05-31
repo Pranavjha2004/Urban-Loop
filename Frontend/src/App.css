@@ -1,4 +1,464 @@
-/* ✨ Twinkling Effect */
+/* 1. Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+/* 2. Theme Variables & Base */
+@layer base {
+  :root {
+    --bg-color: #fbfcf8; 
+    color-scheme: light;
+  }
+  
+  .dark {
+    --bg-color: #080a0c; 
+    color-scheme: dark;
+  }
+}
+
+/* 3. Global Body Setup */
+body {
+  background-color: var(--bg-color);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif; /* Applied your imported font */
+}
+
+/* Urban Loop UI system */
+.urban-shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98) 48%, rgba(17, 24, 39, 0.98)),
+    #020617;
+  color: #f8fafc;
+}
+
+.light .urban-shell {
+  background:
+    linear-gradient(135deg, rgba(248, 250, 252, 0.98), rgba(241, 245, 249, 0.98) 52%, rgba(236, 253, 245, 0.98)),
+    #f8fafc;
+  color: #0f172a;
+}
+
+.urban-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(120deg, rgba(34, 197, 94, 0.08), transparent 32%, rgba(59, 130, 246, 0.07) 68%, transparent);
+  background-size: 42px 42px, 42px 42px, 100% 100%;
+  mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+}
+
+.light .urban-shell::before {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(120deg, rgba(20, 184, 166, 0.13), transparent 36%, rgba(37, 99, 235, 0.09) 72%, transparent);
+}
+
+.urban-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.38;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 17px, rgba(255,255,255,0.025) 17px 18px),
+    linear-gradient(to bottom, rgba(255,255,255,0.04), transparent 24%);
+}
+
+.light .urban-shell::after {
+  opacity: 0.28;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 17px, rgba(15,23,42,0.026) 17px 18px),
+    linear-gradient(to bottom, rgba(255,255,255,0.58), transparent 24%);
+}
+
+.urban-surface {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 18px 70px rgba(2, 6, 23, 0.28);
+  backdrop-filter: blur(22px);
+}
+
+.light .urban-surface {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(15, 23, 42, 0.09);
+  box-shadow: 0 18px 70px rgba(15, 23, 42, 0.11);
+}
+
+.urban-card {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.26);
+  transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
+}
+
+.light .urban-card {
+  background: rgba(255, 255, 255, 0.84);
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.1);
+}
+
+.urban-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(94, 234, 212, 0.22);
+  box-shadow: 0 22px 65px rgba(2, 6, 23, 0.36);
+}
+
+.light .urban-card:hover {
+  border-color: rgba(13, 148, 136, 0.28);
+  box-shadow: 0 22px 65px rgba(15, 23, 42, 0.14);
+}
+
+.urban-input {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #f8fafc;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.light .urban-input {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(15, 23, 42, 0.11);
+  color: #0f172a;
+}
+
+.urban-input:focus {
+  outline: none;
+  border-color: rgba(45, 212, 191, 0.58);
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.09);
+}
+
+.floating-nav {
+  position: fixed;
+  top: max(1rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 50;
+  width: fit-content;
+  max-width: calc(100vw - 1rem);
+  transform: translateX(-50%);
+}
+
+.floating-nav--chat-docked {
+  left: calc(clamp(20rem, 25vw, 24rem) - 4.4rem);
+  transform: none;
+}
+
+.floating-nav__rail {
+  scrollbar-width: none;
+}
+
+.floating-nav__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.floating-nav__item,
+.floating-nav__brand,
+.floating-nav__theme {
+  flex: 0 0 auto;
+}
+
+.chat-page-shell {
+  height: 100dvh;
+  min-height: 100dvh;
+}
+
+.chat-sidebar-panel,
+.chat-main-panel {
+  height: 100dvh;
+  min-height: 0;
+}
+
+.chat-window-header,
+.chat-window-footer {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+.light .urban-shell .text-white {
+  color: #0f172a;
+}
+
+.light .urban-shell .text-zinc-100,
+.light .urban-shell .text-zinc-200,
+.light .urban-shell .text-zinc-300 {
+  color: #334155;
+}
+
+.light .urban-shell .text-zinc-400,
+.light .urban-shell .text-zinc-500,
+.light .urban-shell .text-zinc-600,
+.light .urban-shell .text-zinc-700 {
+  color: #64748b;
+}
+
+.light .urban-shell .border-white\/10,
+.light .urban-shell .border-white\/\[0\.08\],
+.light .urban-shell .border-white\/\[0\.07\],
+.light .urban-shell .border-white\/\[0\.06\],
+.light .urban-shell .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+.light .urban-shell .bg-slate-950\/70,
+.light .urban-shell .bg-slate-950\/72,
+.light .urban-shell .bg-slate-950\/85,
+.light .urban-shell .bg-slate-950\/45,
+.light .urban-shell .bg-zinc-900\/80,
+.light .urban-shell .bg-zinc-900\/60,
+.light .urban-shell .bg-zinc-900,
+.light .urban-shell .bg-zinc-800,
+.light .urban-shell .bg-white\/\[0\.03\],
+.light .urban-shell .bg-white\/\[0\.04\],
+.light .urban-shell .bg-white\/\[0\.05\],
+.light .urban-shell .bg-white\/\[0\.06\] {
+  background-color: rgba(255, 255, 255, 0.76);
+}
+
+.light .urban-shell input,
+.light .urban-shell textarea {
+  color: #0f172a;
+}
+
+.light .urban-shell input::placeholder,
+.light .urban-shell textarea::placeholder {
+  color: #64748b;
+}
+
+.light .urban-shell .placeholder\:text-zinc-600::placeholder,
+.light .urban-shell .placeholder\:text-zinc-700::placeholder {
+  color: #64748b;
+}
+
+.light .urban-shell .text-teal-300,
+.light .urban-shell .text-sky-300,
+.light .urban-shell .text-purple-300,
+.light .urban-shell .text-purple-400,
+.light .urban-shell .text-emerald-400,
+.light .urban-shell .text-red-400,
+.light .urban-shell .text-amber-400 {
+  filter: saturate(1.2) contrast(1.08);
+}
+
+.light .urban-shell .shadow-black\/70 {
+  --tw-shadow-color: rgba(15, 23, 42, 0.18);
+}
+
+.light .urban-shell .urban-pill,
+.light .urban-shell .urban-pill *,
+.light .urban-shell .bg-red-500,
+.light .urban-shell .bg-red-500 *,
+.light .urban-shell [class*="from-teal-"],
+.light .urban-shell [class*="from-teal-"] *,
+.light .urban-shell [class*="from-purple-"],
+.light .urban-shell [class*="from-purple-"] * {
+  color: #ffffff;
+}
+
+.light .chat-page-shell .text-white,
+.light .chat-page-shell .text-zinc-100,
+.light .chat-page-shell .text-zinc-200,
+.light .chat-page-shell .text-zinc-300 {
+  color: #0f172a;
+}
+
+.light .chat-page-shell .text-zinc-400,
+.light .chat-page-shell .text-zinc-500,
+.light .chat-page-shell .text-zinc-600,
+.light .chat-page-shell .text-zinc-700 {
+  color: #334155;
+}
+
+.light .chat-page-shell .bg-slate-950\/70,
+.light .chat-page-shell .bg-slate-950\/72,
+.light .chat-page-shell .bg-slate-950\/85,
+.light .chat-page-shell .bg-slate-950\/45,
+.light .chat-page-shell .bg-slate-900\/80,
+.light .chat-page-shell .bg-zinc-900\/80,
+.light .chat-page-shell .bg-zinc-900\/60,
+.light .chat-page-shell .bg-zinc-900,
+.light .chat-page-shell .bg-zinc-800,
+.light .chat-page-shell .bg-white\/\[0\.03\],
+.light .chat-page-shell .bg-white\/\[0\.04\],
+.light .chat-page-shell .bg-white\/\[0\.05\],
+.light .chat-page-shell .bg-white\/\[0\.06\] {
+  background-color: rgba(255, 255, 255, 0.92);
+}
+
+.light .chat-page-shell .border-white\/10,
+.light .chat-page-shell .border-white\/\[0\.08\],
+.light .chat-page-shell .border-white\/\[0\.07\],
+.light .chat-page-shell .border-white\/\[0\.06\],
+.light .chat-page-shell .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+.light .chat-page-shell input,
+.light .chat-page-shell textarea {
+  color: #0f172a;
+}
+
+.light .chat-page-shell input::placeholder,
+.light .chat-page-shell textarea::placeholder {
+  color: #64748b;
+}
+
+.light .chat-page-shell .urban-pill,
+.light .chat-page-shell .urban-pill *,
+.light .chat-page-shell .bg-red-500,
+.light .chat-page-shell .bg-red-500 *,
+.light .chat-page-shell [class*="from-teal-"],
+.light .chat-page-shell [class*="from-teal-"] *,
+.light .chat-page-shell [class*="from-purple-"],
+.light .chat-page-shell [class*="from-purple-"] * {
+  color: #ffffff;
+}
+
+.call-stage {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.12), transparent 28%),
+    radial-gradient(circle at 80% 8%, rgba(59, 130, 246, 0.12), transparent 24%),
+    rgba(2, 6, 23, 0.46);
+}
+
+.light .call-stage {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(13, 148, 136, 0.12), transparent 28%),
+    radial-gradient(circle at 80% 8%, rgba(37, 99, 235, 0.1), transparent 24%),
+    rgba(255, 255, 255, 0.42);
+}
+
+.urban-pill {
+  background: linear-gradient(135deg, #14b8a6, #2563eb);
+  color: white;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+}
+
+.urban-appear {
+  animation: urbanAppear 420ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@media (max-width: 1024px) {
+  .floating-nav:not(.floating-nav--chat-docked) .floating-nav__item {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .floating-nav {
+    top: auto;
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    left: max(0.75rem, env(safe-area-inset-left));
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+
+  .floating-nav--chat-docked {
+    top: max(1.15rem, env(safe-area-inset-top));
+    right: 4.65rem;
+    bottom: auto;
+    left: auto;
+    width: fit-content;
+  }
+
+  .floating-nav__rail {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.125rem;
+    padding: 0.35rem;
+  }
+
+  .floating-nav--chat-docked .floating-nav__rail {
+    width: fit-content;
+    padding: 0.35rem;
+  }
+
+  .floating-nav__brand {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .floating-nav__item {
+    padding: 0.65rem;
+  }
+
+  .floating-nav__label,
+  .floating-nav__brand-text {
+    display: none;
+  }
+
+  .floating-nav__theme {
+    margin-left: 0;
+    padding: 0.65rem;
+  }
+
+  .chat-window-actions button {
+    padding: 0.55rem;
+  }
+
+  .chat-window-footer {
+    padding-bottom: max(0.625rem, env(safe-area-inset-bottom));
+  }
+
+  .chat-window-footer input {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 430px) {
+  .floating-nav__item {
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
+  }
+
+  .floating-nav__brand {
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
+  }
+
+  .chat-window-actions {
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .floating-nav__item {
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+
+  .floating-nav__theme {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@keyframes urbanAppear {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes urbanFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.urban-float {
+  animation: urbanFloat 4s ease-in-out infinite;
+}
+
+/* 4. ✨ Animations (Stars & Shakes) */
 .star {
   opacity: 0.3;
   animation: twinkle ease-in-out infinite;
@@ -10,7 +470,6 @@
   100% { opacity: 0.2; transform: scale(1); }
 }
 
-/* 🌠 Shooting Star */
 .shooting-star {
   position: absolute;
   width: 2px;
@@ -23,14 +482,8 @@
 }
 
 @keyframes shoot {
-  0% {
-    transform: translate(0, 0) rotate(45deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-400px, 400px) rotate(45deg);
-    opacity: 0;
-  }
+  0% { transform: translate(0, 0) rotate(45deg); opacity: 1; }
+  100% { transform: translate(-400px, 400px) rotate(45deg); opacity: 0; }
 }
 
 @keyframes shake {

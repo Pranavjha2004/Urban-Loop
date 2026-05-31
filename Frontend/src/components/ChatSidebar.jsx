@@ -90,7 +90,7 @@ function CreateGroupModal({ onClose, onCreated }) {
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 40, opacity: 0, scale: 0.96 }}
         transition={{ duration: 0.22, ease: "easeOut" }}
-        className="w-full max-w-sm bg-zinc-950 rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-sm urban-surface rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         style={{ maxHeight: "80vh" }}
       >
         {/* Header */}
@@ -119,7 +119,7 @@ function CreateGroupModal({ onClose, onCreated }) {
           <div className="flex flex-col gap-5 px-5 py-6">
             {/* Group avatar placeholder */}
             <div className="flex justify-center">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-900/40">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/30">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -134,13 +134,13 @@ function CreateGroupModal({ onClose, onCreated }) {
                 onChange={(e) => setGroupName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && groupName.trim() && setStep(2)}
                 placeholder="Enter group name…"
-                className="w-full bg-white/[0.04] border border-white/10 rounded-2xl px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all"
+                className="w-full urban-input rounded-2xl px-4 py-3 text-sm placeholder:text-zinc-600"
               />
             </div>
             <button
               onClick={() => groupName.trim() && setStep(2)}
               disabled={!groupName.trim()}
-              className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition-all"
+              className="w-full py-3 rounded-2xl urban-pill disabled:opacity-30 disabled:cursor-not-allowed text-sm font-bold transition-all"
             >
               Next — Add Members
             </button>
@@ -169,7 +169,7 @@ function CreateGroupModal({ onClose, onCreated }) {
               <input
                 value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search people…"
-                className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all"
+                className="w-full urban-input rounded-xl px-4 py-2.5 text-sm placeholder:text-zinc-600"
               />
             </div>
 
@@ -221,7 +221,7 @@ function CreateGroupModal({ onClose, onCreated }) {
               <button
                 onClick={createGroup}
                 disabled={selected.length < 2 || creating}
-                className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl urban-pill disabled:opacity-30 disabled:cursor-not-allowed text-sm font-bold transition-all flex items-center justify-center gap-2"
               >
                 {creating ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -372,7 +372,7 @@ function ChatSidebar({ onSelectChat, selectedChatId, onChatDeleted, onCallAgain 
         <div className="p-6 pb-4 flex-shrink-0">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-white/40">
+              <h1 className="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-teal-100 to-sky-300">
                 CHATS
               </h1>
               {totalUnread > 0 && (
@@ -458,11 +458,11 @@ function ChatSidebar({ onSelectChat, selectedChatId, onChatDeleted, onCallAgain 
             <div className="absolute inset-0 bg-purple-500/5 rounded-xl blur-lg group-focus-within:bg-purple-500/10 transition-all" />
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
               placeholder="Search…"
-              className="relative w-full bg-white/[0.03] border border-white/10 rounded-xl py-2.5 pl-4 pr-4 text-sm focus:outline-none focus:border-purple-500/50 transition-all placeholder:text-zinc-600" />
+              className="relative w-full urban-input rounded-xl py-2.5 pl-4 pr-4 text-sm placeholder:text-zinc-600" />
           </div>
 
           {/* ── Tab pills ── */}
-          <div className="flex gap-1 mt-3 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1">
+          <div className="flex gap-1 mt-3 urban-surface rounded-xl p-1">
             {[
               { id: "chats", icon: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z", label: "Chats" },
               { id: "calls", icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z", label: "Calls" },
@@ -472,7 +472,7 @@ function ChatSidebar({ onSelectChat, selectedChatId, onChatDeleted, onCallAgain 
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === tab.id
-                    ? "bg-purple-600/20 text-purple-300 shadow-sm"
+                    ? "bg-teal-400/15 text-teal-200 shadow-sm"
                     : "text-zinc-500 hover:text-zinc-300"
                 }`}
               >
@@ -520,15 +520,15 @@ function ChatSidebar({ onSelectChat, selectedChatId, onChatDeleted, onCallAgain 
                   transition={{ delay: idx * 0.02, layout: { duration: 0.18 } }}
                   onClick={() => onSelectChat(chat)}
                   className={`group relative flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all ${
-                    isSelected ? "bg-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]" : "hover:bg-white/[0.03]"
+                    isSelected ? "bg-teal-400/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]" : "hover:bg-white/[0.04]"
                   }`}
                 >
-                  {isSelected && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-purple-500 rounded-full" />}
+                  {isSelected && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-teal-400 rounded-full" />}
 
                   {/* Avatar */}
                   <div className="relative flex-shrink-0">
                     {isGroup ? (
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center border border-white/10 text-white font-bold text-sm ${isSelected ? "scale-105" : ""}`}>
+                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center border border-white/10 text-white font-bold text-sm ${isSelected ? "scale-105" : ""}`}>
                         {name?.slice(0, 2).toUpperCase()}
                       </div>
                     ) : (
