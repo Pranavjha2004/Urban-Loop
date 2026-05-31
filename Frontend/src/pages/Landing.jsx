@@ -162,7 +162,7 @@ function Landing() {
             }`}>
               <Sparkles size={14} /> City social, redesigned
             </div>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
+            <h1 className="max-w-4xl text-5xl font-black leading-[1.08] tracking-tight sm:text-7xl sm:leading-[1.05] lg:text-8xl lg:leading-[1.08]">
               Your city, moving in one loop.
             </h1>
             <p className={`mt-7 max-w-2xl text-base leading-8 sm:text-lg ${isDark ? "text-zinc-400" : "text-slate-600"}`}>

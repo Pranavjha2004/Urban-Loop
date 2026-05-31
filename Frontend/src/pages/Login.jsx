@@ -59,7 +59,7 @@ function Login() {
       if (data.token) localStorage.setItem("token", data.token);
       setUser(data.user);
       showToast("Login successful! 🚀", "success");
-      navigate("/feed", { replace: true });
+      navigate(data.user?.role === "admin" ? "/admin" : "/feed", { replace: true });
     } catch (err) {
       setLoading(false);
       showToast("Login failed. Check credentials.", "error");

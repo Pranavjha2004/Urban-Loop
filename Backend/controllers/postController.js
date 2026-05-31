@@ -40,7 +40,7 @@ export const createPost = async (req, res) => {
 
 // ─── Get All Posts ────────────────────────────────────────────────────────────
 export const getPosts = async (req, res) => {
-  const posts = await Post.find()
+  const posts = await Post.find({ deletedAt: null })
     .populate("user", "name username avatar")
     .sort({ createdAt: -1 });
   res.json(posts);
@@ -48,17 +48,20 @@ export const getPosts = async (req, res) => {
 
 // ─── Delete Post ──────────────────────────────────────────────────────────────
 export const deletePost = async (req, res) => {
-  const post = await Post.findById(req.params.id);
+  const post = await Post.findOne({ _id: req.params.id, deletedAt: null });
   if (!post) return res.status(404).json({ message: "Post not found" });
   if (post.user.toString() !== req.user._id.toString())
     return res.status(401).json({ message: "Not authorized" });
-  await post.deleteOne();
+  post.deletedAt = new Date();
+  post.deletedBy = req.user._id;
+  post.deleteReason = "Deleted by owner";
+  await post.save();
   res.json({ message: "Post deleted" });
 };
 
 // ─── Like / Unlike ────────────────────────────────────────────────────────────
 export const likePost = async (req, res) => {
-  const post = await Post.findById(req.params.id);
+  const post = await Post.findOne({ _id: req.params.id, deletedAt: null });
   if (!post) return res.status(404).json({ message: "Post not found" });
 
   const alreadyLiked = post.likes.includes(req.user._id);
@@ -74,7 +77,7 @@ export const likePost = async (req, res) => {
 
 // ─── Add Comment ──────────────────────────────────────────────────────────────
 export const addComment = async (req, res) => {
-  const post = await Post.findById(req.params.id);
+  const post = await Post.findOne({ _id: req.params.id, deletedAt: null });
   if (!post) return res.status(404).json({ message: "Post not found" });
   post.comments.push({ user: req.user._id, text: req.body.text });
   await post.save();
@@ -92,14 +95,15 @@ export const getFeedPosts = async (req, res) => {
     const search = req.query.search?.trim() || "";  // caption keyword search
 
     // ── Base query by filter ───────────────────────────────────────────────
-    let query = {};
+    let query = { deletedAt: null };
     if (filter === "following") {
-      query = { user: { $in: user.following } };
+      query = { ...query, user: { $in: user.following } };
     } else if (filter === "nearby") {
-      query = { city: user.city };
+      query = { ...query, city: user.city };
     } else {
       // "all" — following + same city (original behaviour)
       query = {
+        ...query,
         $or: [
           { user: { $in: user.following } },
           { city: user.city },

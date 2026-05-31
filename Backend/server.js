@@ -18,6 +18,7 @@ import communityRoutes from "./routes/communityRoutes.js";
 import callRoutes      from "./routes/callRoutes.js";
 import exploreRoutes   from "./routes/exploreRoutes.js";   // ← ADDED
 
+import adminRoutes     from "./routes/adminRoutes.js";
 import { initSocket } from "./socket/socket.js";
 
 connectDB();
@@ -61,6 +62,7 @@ const messageLimiter = rateLimit({
 
 app.use("/api/", apiLimiter);
 app.use("/api/messages", messageLimiter);
+app.use("/api/admin", adminRoutes);
 
 // ── Routes ─────────────────────────────────────────────────
 app.use("/api/auth",      authRoutes);
@@ -86,4 +88,13 @@ app.use((err, req, res, _next) => {
 });
 
 const PORT = process.env.PORT || 5000;
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${PORT} is already in use. Stop the existing backend process or set a different PORT in .env.`);
+    process.exit(1);
+  }
+  console.error("Server failed to start:", err);
+  process.exit(1);
+});
+
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

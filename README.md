@@ -17,6 +17,7 @@ The project is split into a Vite React frontend and an Express/MongoDB backend. 
 - [Frontend Routes](#frontend-routes)
 - [Backend API Surface](#backend-api-surface)
 - [Realtime Socket Features](#realtime-socket-features)
+- [Admin Platform](#admin-platform)
 - [Environment Variables](#environment-variables)
 - [Local Development](#local-development)
 - [Production Deployment](#production-deployment)
@@ -58,6 +59,7 @@ Urban Loop helps users stay connected with their local city through:
 - `/auth/me` session check.
 - Logout support.
 - Production cookie behavior can be configured with `COOKIE_SAMESITE`.
+- Role-aware session handling for standard users and administrators.
 
 ### Feed
 
@@ -169,6 +171,17 @@ Urban Loop helps users stay connected with their local city through:
 - Responsive video call grid and controls.
 - Responsive landing page, explore page, profile page, communities, modals, and core components.
 
+### Admin Platform
+
+- Dedicated admin dashboard for platform management.
+- Role-based access control so only authorized administrators can open admin tools.
+- Platform analytics overview with user, post, chat, call, and activity metrics.
+- Responsive data visualizations for monitoring platform growth and engagement.
+- User management with profile, activity, suspension, restore, and deletion controls.
+- Post moderation with temporary removal and permanent deletion options.
+- User activity insights including login count, post count, call usage, and recent activity.
+- Dark and light theme support consistent with the rest of the platform.
+
 ## Tech Stack
 
 ### Frontend
@@ -216,6 +229,7 @@ Urban-Loop/
       postController.js
       userController.js
     middleware/
+      adminMiddleware.js
       authMiddleware.js
       upload.js
     models/
@@ -226,6 +240,7 @@ Urban-Loop/
       Post.js
       User.js
     routes/
+      adminRoutes.js
       authRoutes.js
       callRoutes.js
       chatRoutes.js
@@ -245,6 +260,7 @@ Urban-Loop/
       components/
       context/
       pages/
+        AdminPanel.jsx
       services/
       socket.js
       App.jsx
@@ -268,6 +284,7 @@ Urban-Loop/
 | `/communities` | Protected | Community discovery and management |
 | `/communities/:id` | Protected | Community room |
 | `/explore/:city` | Protected | City news, weather, places, and events |
+| `/admin` | Admin only | Platform analytics, moderation, and database management |
 
 ## Backend API Surface
 
@@ -376,6 +393,24 @@ Base path: `/api/explore`
 | --- | --- | --- |
 | `GET` | `/:city` | Get weather, news, places, and events for a city |
 
+### Admin
+
+Base path: `/api/admin`
+
+Admin endpoints are protected by authentication and administrator authorization.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/analytics` | Get platform analytics and summary metrics |
+| `GET` | `/users` | List users with activity and account state |
+| `PATCH` | `/users/:id/suspend` | Temporarily suspend a user |
+| `PATCH` | `/users/:id/restore` | Restore a suspended or soft-deleted user |
+| `DELETE` | `/users/:id` | Delete a user account |
+| `GET` | `/posts` | List posts for moderation |
+| `PATCH` | `/posts/:id/remove` | Temporarily remove a post |
+| `PATCH` | `/posts/:id/restore` | Restore a removed post |
+| `DELETE` | `/posts/:id/permanent` | Permanently delete a post |
+
 ## Realtime Socket Features
 
 Socket.IO is used for all realtime behavior:
@@ -396,6 +431,21 @@ Socket.IO is used for all realtime behavior:
 - Participant updates during calls.
 
 The frontend socket URL is configured with `VITE_SOCKET_URL`.
+
+## Admin Platform
+
+Urban Loop includes a production-oriented admin platform for authorized administrators. The admin area provides a central place to monitor platform health, review user activity, and moderate content without changing the normal user experience.
+
+Admin capabilities include:
+
+- Dashboard analytics for users, posts, chats, calls, and engagement.
+- Graphical summaries for quick monitoring across desktop and mobile screens.
+- User management with activity history, login counts, post counts, call usage, suspension, restoration, and deletion workflows.
+- Post moderation with temporary removal, restoration, and permanent deletion.
+- Role-based access checks on both frontend routes and backend API endpoints.
+- Theme-aware responsive UI matching the platform light and dark modes.
+
+Admin access should be configured securely in the backend environment and never documented with real production credentials.
 
 ## Environment Variables
 
@@ -555,11 +605,11 @@ The included `Frontend/vercel.json` handles SPA routing by rewriting all routes 
 
 ### User
 
-Stores identity, authentication data, profile details, avatar, city, followers, and following relationships.
+Stores identity, authentication data, role, profile details, avatar, city, followers, following relationships, account state, login count, and last login time.
 
 ### Post
 
-Stores uploaded media, captions/content, author, likes, comments, and timestamps.
+Stores uploaded media, captions/content, author, likes, comments, moderation state, deletion metadata, and timestamps.
 
 ### Chat
 
