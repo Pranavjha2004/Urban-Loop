@@ -84,30 +84,47 @@ export const addComment = async (req, res) => {
 // ─── Feed Posts ───────────────────────────────────────────────────────────────
 export const getFeedPosts = async (req, res) => {
   try {
-    const user  = req.user;
-    const page  = Number(req.query.page)  || 1;
-    const limit = Number(req.query.limit) || 5;
-    const skip  = (page - 1) * limit;
+    const user   = req.user;
+    const page   = Number(req.query.page)  || 1;
+    const limit  = Number(req.query.limit) || 5;
+    const skip   = (page - 1) * limit;
+    const filter = req.query.filter || "all";      // all | following | nearby
+    const search = req.query.search?.trim() || "";  // caption keyword search
 
-    const query = {
-      $or: [
-        { user: { $in: user.following } },
-        { city: user.city },
-      ],
-    };
+    // ── Base query by filter ───────────────────────────────────────────────
+    let query = {};
+    if (filter === "following") {
+      query = { user: { $in: user.following } };
+    } else if (filter === "nearby") {
+      query = { city: user.city };
+    } else {
+      // "all" — following + same city (original behaviour)
+      query = {
+        $or: [
+          { user: { $in: user.following } },
+          { city: user.city },
+        ],
+      };
+    }
+
+    // ── Caption search overlay ─────────────────────────────────────────────
+    if (search) {
+      query = {
+        ...query,
+        caption: { $regex: search, $options: "i" },
+      };
+    }
 
     const [posts, totalPosts] = await Promise.all([
       Post.find(query)
-        .populate("user", "name username avatar")
+        .populate("user", "name username avatar city")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
       Post.countDocuments(query),
     ]);
 
-    // Annotate each post with whether the requesting user has liked it.
-    // likes[] stores ObjectIds — compare as strings to avoid type mismatch.
-    const userId = req.user._id.toString();
+    const userId   = req.user._id.toString();
     const annotated = posts.map((p) => ({
       ...p.toObject(),
       likedByUser: p.likes.some((id) => id.toString() === userId),
@@ -116,6 +133,7 @@ export const getFeedPosts = async (req, res) => {
 
     res.json({ posts: annotated, hasMore: skip + posts.length < totalPosts, page, totalPosts });
   } catch (err) {
+    console.error("getFeedPosts error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

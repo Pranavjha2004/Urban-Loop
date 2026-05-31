@@ -4,7 +4,6 @@ import { Search, Plus, Globe, Lock, Radio, Users, ChevronRight } from "lucide-re
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import StarBackground from "../components/StarBackground";
 import FloatingNav from "../components/FloatingNav";
 import CreateCommunityModal from "../components/CreateCommunityModal";
 
@@ -16,10 +15,10 @@ function CommunityCard({ community, onJoin, onOpen, joining }) {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-zinc-900/60 backdrop-blur-xl border border-white/[0.07] rounded-2xl overflow-hidden hover:border-white/[0.14] transition-all group"
+      className="urban-card rounded-2xl overflow-hidden group"
     >
       {/* Banner / avatar row */}
-      <div className="relative h-16 bg-gradient-to-br from-purple-900/40 to-indigo-900/30 flex-shrink-0">
+      <div className="relative h-16 bg-gradient-to-br from-teal-500/20 via-sky-500/15 to-slate-900 flex-shrink-0">
         {community.coverImage && (
           <img src={community.coverImage} className="w-full h-full object-cover" alt="" />
         )}
@@ -27,7 +26,7 @@ function CommunityCard({ community, onJoin, onOpen, joining }) {
           {community.avatar ? (
             <img src={community.avatar} className="w-10 h-10 rounded-xl border-2 border-zinc-900 object-cover" alt="" />
           ) : (
-            <div className="w-10 h-10 rounded-xl border-2 border-zinc-900 bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-10 h-10 rounded-xl border-2 border-zinc-900 bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
               {community.name?.slice(0, 1).toUpperCase()}
             </div>
           )}
@@ -73,7 +72,7 @@ function CommunityCard({ community, onJoin, onOpen, joining }) {
             <button
               onClick={() => onJoin(community._id)}
               disabled={joining === community._id}
-              className="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-lg shadow-purple-900/30"
+              className="flex-1 py-2 rounded-xl urban-pill disabled:opacity-50 text-xs font-bold transition-all"
             >
               {joining === community._id
                 ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
@@ -162,8 +161,7 @@ export default function CommunitiesPage() {
   const loading   = tab === "explore" ? loadingEx  : loadingMine;
 
   return (
-    <div className="relative min-h-screen bg-zinc-950 text-white">
-      <StarBackground />
+    <div className="urban-shell text-white">
       <FloatingNav />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 pt-24 pb-16">
@@ -182,14 +180,14 @@ export default function CommunitiesPage() {
           <motion.button
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-bold transition-all shadow-lg shadow-purple-900/40"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl urban-pill text-sm font-bold transition-all"
           >
             <Plus size={16} /> New
           </motion.button>
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 bg-white/[0.04] border border-white/[0.07] rounded-2xl p-1 mb-6 w-fit">
+        <div className="flex items-center gap-1 urban-surface rounded-2xl p-1 mb-6 w-fit">
           {[
             { id: "explore", label: "Explore" },
             { id: "mine",    label: "My Communities" },
@@ -216,7 +214,7 @@ export default function CommunitiesPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={`Search communities in ${user?.city || "your city"}…`}
-              className="w-full bg-white/[0.04] border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all"
+              className="w-full urban-input rounded-xl py-2.5 pl-10 pr-4 text-sm placeholder:text-zinc-600"
             />
           </div>
         )}
@@ -237,7 +235,7 @@ export default function CommunitiesPage() {
             </p>
             <button
               onClick={() => setShowCreate(true)}
-              className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-all"
+              className="px-5 py-2 rounded-xl urban-pill text-sm font-semibold transition-all"
             >
               Create the first one
             </button>

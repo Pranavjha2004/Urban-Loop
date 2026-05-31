@@ -57,6 +57,7 @@ const PATHS = {
   pause:    "M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z",
   flip:     "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15",
   forward:  "M13 7l5 5m0 0l-5 5m5-5H6",
+  back:     "M15 19l-7-7 7-7",
 };
 const Icon = ({ id, className = "w-5 h-5", style }) => (
   <svg className={className} style={style} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -351,7 +352,7 @@ function MessageBubble({ msg, isMine, otherUser, onReact, onEdit, onDelete, onVo
             onVote={(idxs) => onVotePoll(msg._id, idxs)}
           />
         ) : (
-          <div className={`px-4 py-3 shadow-lg ${isMine ? "bg-purple-600 text-white rounded-[22px] rounded-br-none" : "bg-zinc-900/80 backdrop-blur-md text-zinc-200 rounded-[22px] rounded-bl-none border border-white/5"}`}>
+          <div className={`px-4 py-3 shadow-lg ${isMine ? "bg-gradient-to-br from-teal-500 to-blue-600 text-white rounded-[22px] rounded-br-none" : "bg-slate-900/80 backdrop-blur-md text-zinc-200 rounded-[22px] rounded-bl-none border border-white/5"}`}>
             {isDeleted ? (
               <p className="text-[13px] italic opacity-40 select-none">Message deleted</p>
             ) : (
@@ -792,8 +793,8 @@ function AttachMenu({ onFile, onOpenCamera, onOpenPoll }) {
 }
 
 // ─── ChatWindow ───────────────────────────────────────────────────────────────
-function ChatWindow({ chat, onDeleteChat }) {
-  const { user } = useAuth();
+function ChatWindow({ chat, onDeleteChat, onBack }) {
+  const { user, theme } = useAuth();
   const [messages,        setMessages]        = useState([]);
   const [text,            setText]            = useState("");
   const [typingUsers,     setTypingUsers]     = useState(new Set());
@@ -1032,14 +1033,21 @@ function ChatWindow({ chat, onDeleteChat }) {
       </AnimatePresence>
 
       {/* ⚠️ IMPORTANT: h-full works because ChatPage wraps this in absolute inset-0 */}
-      <div className="flex flex-col h-full bg-[#0c0c0e]">
+      <div className="flex flex-col h-full bg-slate-950/45">
 
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] backdrop-blur-2xl bg-black/40 z-30 flex-shrink-0">
-        <div className="flex items-center gap-4">
+      <header className="chat-window-header flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-white/[0.08] backdrop-blur-2xl bg-slate-950/72 z-30 flex-shrink-0">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <button
+            onClick={onBack}
+            className="md:hidden p-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-zinc-400 hover:text-white transition-all border border-white/5"
+            title="Back to chats"
+          >
+            <Icon id="back" className="w-5 h-5" />
+          </button>
           <div className="relative">
             {chat.isGroup ? (
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-sm ring-1 ring-white/20">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm ring-1 ring-white/20">
                 {displayName?.slice(0, 2).toUpperCase()}
               </div>
             ) : (
@@ -1049,8 +1057,8 @@ function ChatWindow({ chat, onDeleteChat }) {
               <div className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-4 border-[#0c0c0e] ${isOnline ? "bg-emerald-500" : "bg-zinc-700"}`} />
             )}
           </div>
-          <div>
-            <h2 className="font-bold text-white tracking-tight">{displayName}</h2>
+          <div className="min-w-0">
+            <h2 className="font-bold text-white tracking-tight truncate max-w-[38vw] sm:max-w-none">{displayName}</h2>
             <div className="flex items-center gap-1.5">
               {chat.isGroup ? (
                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
@@ -1067,7 +1075,7 @@ function ChatWindow({ chat, onDeleteChat }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="chat-window-actions flex items-center gap-1.5 sm:gap-2">
           {/* Voice call */}
           <button
             onClick={() => startCall("voice")}
@@ -1079,7 +1087,7 @@ function ChatWindow({ chat, onDeleteChat }) {
           {/* Video call */}
           <button
             onClick={() => startCall("video")}
-            className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-purple-500/10 text-zinc-400 hover:text-purple-400 transition-all border border-white/5"
+            className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-sky-500/10 text-zinc-400 hover:text-sky-300 transition-all border border-white/5"
             title="Video call"
           >
             <Icon id="video" className="w-5 h-5" />
@@ -1091,7 +1099,7 @@ function ChatWindow({ chat, onDeleteChat }) {
       </header>
 
       {/* Messages */}
-      <div ref={containerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-6 py-6 space-y-4 scrollbar-hide min-h-0">
+        <div ref={containerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 scrollbar-hide min-h-0">
         {loadingMore && <div className="flex justify-center py-2"><div className="w-5 h-5 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" /></div>}
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
@@ -1114,7 +1122,7 @@ function ChatWindow({ chat, onDeleteChat }) {
       </div>
 
       {/* Footer */}
-      <footer className="p-4 pt-2 flex-shrink-0">
+      <footer className="chat-window-footer p-2.5 sm:p-4 sm:pt-2 flex-shrink-0">
         <div className="relative">
           <AnimatePresence>
             {selectedFile && <AttachmentPreview file={selectedFile} onClear={() => setSelectedFile(null)} />}
@@ -1127,13 +1135,13 @@ function ChatWindow({ chat, onDeleteChat }) {
                 {showEmojiPicker && (
                   <motion.div ref={pickerRef} initial={{ opacity: 0, y: 16, scale: 0.92 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 16, scale: 0.92 }}
                     className="absolute bottom-16 right-0 z-50 shadow-2xl">
-                    <EmojiPicker theme={Theme.DARK} onEmojiClick={(e) => setText((t) => t + e.emoji)} autoFocusSearch={false} width={320} height={380} />
+                    <EmojiPicker theme={theme === "dark" ? Theme.DARK : Theme.LIGHT} onEmojiClick={(e) => setText((t) => t + e.emoji)} autoFocusSearch={false} width={320} height={380} />
                   </motion.div>
                 )}
               </AnimatePresence>
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-[2rem] opacity-0 group-focus-within:opacity-15 blur-md transition-opacity pointer-events-none" />
-                <div className="relative flex items-center gap-2 bg-[#121214] border border-white/10 p-2 rounded-[1.8rem] backdrop-blur-3xl">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-400 to-blue-500 rounded-[2rem] opacity-0 group-focus-within:opacity-20 blur-md transition-opacity pointer-events-none" />
+                <div className="relative flex items-center gap-2 bg-slate-950/85 border border-white/10 p-2 rounded-[1.8rem] backdrop-blur-3xl">
                   <AttachMenu onFile={setSelectedFile} onOpenCamera={() => setShowCamera(true)} onOpenPoll={() => setShowPoll(true)} />
                   <input value={text} onChange={handleTyping} onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
                     placeholder="Type a message..." className="flex-1 bg-transparent border-none outline-none text-sm text-zinc-100 placeholder:text-zinc-600 px-2 min-w-0" />
@@ -1141,12 +1149,12 @@ function ChatWindow({ chat, onDeleteChat }) {
                     <button onClick={() => setRecording(true)} className="p-2 rounded-full text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all">
                       <Icon id="mic" className="w-5 h-5" />
                     </button>
-                    <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className={`p-2 rounded-full transition-all ${showEmojiPicker ? "text-purple-400 bg-purple-500/10" : "text-zinc-500 hover:text-white"}`}>
+                    <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className={`p-2 rounded-full transition-all ${showEmojiPicker ? "text-teal-300 bg-teal-400/10" : "text-zinc-500 hover:text-white"}`}>
                       <Icon id="emoji" className="w-5 h-5" />
                     </button>
                     <motion.button whileTap={{ scale: 0.95 }} onClick={sendMessage}
                       disabled={sending || (!text.trim() && !selectedFile)}
-                      className="ml-1 bg-purple-600 hover:bg-purple-500 disabled:opacity-20 text-white p-2.5 rounded-full shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all flex items-center justify-center">
+                      className="ml-1 urban-pill disabled:opacity-20 p-2.5 rounded-full transition-all flex items-center justify-center">
                       {sending ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Icon id="send" className="w-5 h-5" />}
                     </motion.button>
                   </div>

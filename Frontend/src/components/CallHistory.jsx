@@ -47,14 +47,14 @@ function CallItem({ log, userId, onCallAgain }) {
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.03] transition-all group"
+      className="flex items-center gap-4 p-4 rounded-2xl hover:bg-teal-400/[0.06] transition-all group"
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
         {displayAvatar ? (
           <img src={displayAvatar} className="w-12 h-12 rounded-2xl object-cover" alt="" />
         ) : (
-          <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center text-white font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center text-white font-bold">
             {displayName?.charAt(0)?.toUpperCase()}
           </div>
         )}
@@ -98,7 +98,7 @@ function CallItem({ log, userId, onCallAgain }) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => onCallAgain(log)}
-          className="opacity-0 group-hover:opacity-100 p-2 rounded-xl bg-purple-600/15 hover:bg-purple-600/25 text-purple-400 transition-all"
+          className="opacity-0 group-hover:opacity-100 p-2 rounded-xl bg-teal-400/10 hover:bg-teal-400/20 text-teal-300 transition-all"
           title={`Call again (${log.type})`}
         >
           {log.type === "video" ? (
@@ -160,7 +160,7 @@ export default function CallHistory({ onCallAgain }) {
             onClick={() => setFilter(f.id)}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
               filter === f.id
-                ? "bg-purple-600 text-white"
+                ? "urban-pill"
                 : "text-zinc-500 hover:text-white hover:bg-white/5"
             }`}
           >

@@ -4,9 +4,14 @@ import Message from "../models/Message.js";
 const onlineUsers = new Map(); // userId → socketId
 
 export const initSocket = (server) => {
+  const CLIENT_ORIGINS = (process.env.CLIENT_ORIGINS || "http://localhost:5173,http://localhost:5174,http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173", "http://localhost:3000"],
+      origin: CLIENT_ORIGINS,
       credentials: true,
     },
   });

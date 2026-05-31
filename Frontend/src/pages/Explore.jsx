@@ -9,7 +9,6 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import API from "../services/api";
-import StarBackground from "../components/StarBackground";
 import FloatingNav from "../components/FloatingNav";
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -26,6 +25,12 @@ const TABS = [
 ];
 
 const CATEGORY_COLORS = {
+  heritage:   "text-amber-300  bg-amber-300/10  border-amber-300/20",
+  monument:   "text-stone-300  bg-stone-300/10  border-stone-300/20",
+  attraction: "text-teal-300   bg-teal-300/10   border-teal-300/20",
+  viewpoint:  "text-sky-300    bg-sky-300/10    border-sky-300/20",
+  temple:     "text-rose-300   bg-rose-300/10   border-rose-300/20",
+  market:     "text-lime-300   bg-lime-300/10   border-lime-300/20",
   restaurant: "text-orange-400 bg-orange-400/10 border-orange-400/20",
   cafe:       "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
   cinema:     "text-blue-400   bg-blue-400/10   border-blue-400/20",
@@ -37,10 +42,13 @@ const CATEGORY_COLORS = {
 };
 
 const CATEGORY_ICONS = {
+  heritage: "H", monument: "M", attraction: "A", viewpoint: "V", temple: "T", market: "B",
   restaurant: "🍽️", cafe: "☕",  cinema: "🎬",
   hospital:   "🏥", museum: "🏛️", park:  "🌳",
   bar:        "🍸", mall:  "🛍️",
 };
+
+const PLACE_FILTERS = ["all", "heritage", "monument", "attraction", "museum", "viewpoint", "park", "temple", "market"];
 
 const EVENT_COLORS = {
   festivals:   "text-pink-400   bg-pink-400/10   border-pink-400/20",
@@ -99,17 +107,16 @@ export default function Explore() {
   };
 
   return (
-    <div className="relative min-h-screen bg-zinc-950">
-      <StarBackground />
+    <div className="urban-shell">
       <FloatingNav />
 
-      <div className="relative z-10 max-w-2xl mx-auto px-4 pt-28 pb-16">
+      <div className="relative z-10 max-w-5xl mx-auto px-3 sm:px-4 pt-24 sm:pt-28 pb-16">
 
         {/* ── Header ── */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white capitalize">{city}</h1>
+        <div className="mb-8 urban-surface rounded-3xl p-4 sm:p-6 urban-appear">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white capitalize">{city}</h1>
           {data?.weather && (
-            <div className="flex items-center gap-3 mt-2 text-sm text-zinc-400">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2 text-sm text-zinc-400">
               <img
                 src={`https://openweathermap.org/img/wn/${data.weather.icon}.png`}
                 alt={data.weather.description}
@@ -134,8 +141,8 @@ export default function Explore() {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium
                 whitespace-nowrap transition-all
                 ${tab === id
-                  ? "bg-purple-600 text-white"
-                  : "bg-zinc-800/60 text-zinc-400 hover:text-white hover:bg-zinc-700"
+                  ? "urban-pill"
+                  : "urban-surface text-zinc-400 hover:text-white"
                 }`}
             >
               <Icon size={14} />{label}
@@ -167,7 +174,7 @@ export default function Explore() {
                 {data.news.length === 0 && <Empty text="No news found for this city." />}
                 {data.news.map((article, i) => (
                   <a key={i} href={article.url} target="_blank" rel="noreferrer"
-                    className="flex gap-3 bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4 hover:border-purple-600/40 transition-colors">
+                    className="flex gap-3 urban-card rounded-2xl p-4">
                     {article.urlToImage && (
                       <img src={article.urlToImage} alt="" className="w-20 h-16 rounded-lg object-cover flex-shrink-0" />
                     )}
@@ -190,21 +197,19 @@ export default function Explore() {
                     placeholder="Search places..."
                     value={placeSearch}
                     onChange={(e) => setPlaceSearch(e.target.value)}
-                    className="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl
-                      pl-9 pr-4 py-2.5 text-sm text-white placeholder:text-zinc-600
-                      focus:outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full urban-input rounded-xl pl-9 pr-4 py-2.5 text-sm placeholder:text-zinc-600"
                   />
                 </div>
 
                 <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
-                  {["all","restaurant","cafe","cinema","hospital","park","bar","mall"].map((cat) => (
+                  {PLACE_FILTERS.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setPlaceCategory(cat)}
                       className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all capitalize
-                        ${placeCategory === cat ? "bg-purple-600 text-white" : "bg-zinc-800 text-zinc-400 hover:text-white"}`}
+                        ${placeCategory === cat ? "urban-pill" : "urban-surface text-zinc-400 hover:text-white"}`}
                     >
-                      {cat === "all" ? "All Places" : cat}
+                      {cat === "all" ? "Must Visit" : cat}
                     </button>
                   ))}
                 </div>
@@ -216,7 +221,7 @@ export default function Explore() {
                     return matchesSearch && matchesCategory;
                   });
                   return (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {filtered.length === 0 && (
                         <div className="col-span-2"><Empty text="No places match your search." /></div>
                       )}
@@ -224,12 +229,10 @@ export default function Explore() {
                         <div
                           key={i}
                           onClick={() => setSelectedPlace(place)}
-                          className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5
-                            hover:border-purple-600/40 hover:bg-zinc-900 transition-all duration-200
-                            flex flex-col min-h-[160px] cursor-pointer"
+                          className="urban-card rounded-2xl p-5 flex flex-col min-h-[160px] cursor-pointer"
                         >
                           <div className="flex items-start justify-between mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center text-2xl">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center text-lg font-black text-zinc-200">
                               {CATEGORY_ICONS[place.category] || "📍"}
                             </div>
                             <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize border ${CATEGORY_COLORS[place.category] || "text-purple-400 bg-purple-400/10 border-purple-400/20"}`}>
@@ -241,6 +244,9 @@ export default function Explore() {
                             <MapPin size={12} className="text-zinc-500 mt-0.5 flex-shrink-0" />
                             <p className="text-zinc-500 text-xs line-clamp-2">{place.address || city}</p>
                           </div>
+                          {place.source && (
+                            <p className="mt-3 text-[10px] uppercase tracking-widest text-zinc-600">{place.source}</p>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -257,7 +263,7 @@ export default function Explore() {
                   const startDate = new Date(event.start).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
                   const endDate   = event.end ? new Date(event.end).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : null;
                   return (
-                    <div key={i} className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 hover:border-purple-600/40 transition-all">
+                    <div key={i} className="urban-card rounded-2xl p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="w-14 h-14 rounded-xl bg-zinc-800 flex items-center justify-center text-3xl flex-shrink-0">
                           {EVENT_ICONS[event.category] || "📅"}
@@ -271,6 +277,17 @@ export default function Explore() {
                         <CalendarDays size={14} className="flex-shrink-0" />
                         <span>{startDate}{endDate && ` – ${endDate}`}</span>
                       </div>
+                      {event.venue && (
+                        <div className="flex items-center gap-2 text-zinc-500 text-sm mt-2">
+                          <MapPin size={14} className="flex-shrink-0" />
+                          <span>{event.venue}</span>
+                        </div>
+                      )}
+                      {event.isFallback && (
+                        <p className="mt-3 text-[10px] uppercase tracking-widest text-zinc-600">
+                          Suggested local discovery
+                        </p>
+                      )}
                       {event.labels?.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-3">
                           {event.labels.slice(0, 4).map((l) => (
@@ -303,7 +320,7 @@ export default function Explore() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 60, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl"
+              className="w-full max-w-lg urban-surface rounded-3xl overflow-hidden shadow-2xl"
             >
               <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
                 <div>
@@ -345,9 +362,7 @@ export default function Explore() {
                 <button
                   onClick={() => openDirections(selectedPlace)}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl
-                    bg-gradient-to-r from-purple-600 to-indigo-600
-                    hover:from-purple-500 hover:to-indigo-500
-                    text-white text-sm font-semibold transition-all shadow-lg shadow-purple-900/40"
+                    urban-pill text-sm font-semibold transition-all"
                 >
                   <MapPin size={16} />
                   Get Directions on Google Maps

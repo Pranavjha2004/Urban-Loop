@@ -69,7 +69,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
         animate={{ scale: 1,    y: 0,  opacity: 1 }}
         exit={{    scale: 0.95, y: 20, opacity: 0 }}
         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+        className="w-full max-w-md urban-surface rounded-3xl shadow-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.07]">
@@ -89,7 +89,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
               {avatarPreview ? (
                 <img src={avatarPreview} className="w-full h-full object-cover rounded-2xl border border-white/10" alt="" />
               ) : (
-                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center border border-white/10">
+                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-teal-400 to-blue-600 flex items-center justify-center border border-white/10">
                   <Upload size={28} className="text-white/70" />
                 </div>
               )}
@@ -111,7 +111,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
               onChange={(e) => setName(e.target.value)}
               maxLength={80}
               placeholder="e.g. Bhubaneswar Cyclists"
-              className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all"
+              className="w-full urban-input rounded-xl px-4 py-2.5 text-sm placeholder:text-zinc-600"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
               maxLength={500}
               rows={3}
               placeholder="What is this community about?"
-              className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+              className="w-full urban-input rounded-xl px-4 py-2.5 text-sm placeholder:text-zinc-600 resize-none"
             />
           </div>
 
@@ -146,13 +146,13 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
                   onClick={() => setIsPublic(val)}
                   className={`flex items-start gap-3 p-3 rounded-xl border transition-all text-left ${
                     isPublic === val
-                      ? "border-purple-500/60 bg-purple-500/10"
+                      ? "border-teal-300/50 bg-teal-400/10"
                       : "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
                   }`}
                 >
-                  <Icon size={18} className={isPublic === val ? "text-purple-400 mt-0.5 flex-shrink-0" : "text-zinc-500 mt-0.5 flex-shrink-0"} />
+                  <Icon size={18} className={isPublic === val ? "text-teal-300 mt-0.5 flex-shrink-0" : "text-zinc-500 mt-0.5 flex-shrink-0"} />
                   <div>
-                    <p className={`text-xs font-bold ${isPublic === val ? "text-purple-300" : "text-zinc-300"}`}>{label}</p>
+                    <p className={`text-xs font-bold ${isPublic === val ? "text-teal-200" : "text-zinc-300"}`}>{label}</p>
                     <p className="text-[10px] text-zinc-600 mt-0.5">{sub}</p>
                   </div>
                 </button>
@@ -206,7 +206,7 @@ export default function CreateCommunityModal({ onClose, onCreated }) {
           <button
             type="submit"
             disabled={creating || !name.trim()}
-            className="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition-all shadow-lg shadow-purple-900/40 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-2xl urban-pill disabled:opacity-30 disabled:cursor-not-allowed text-sm font-bold transition-all flex items-center justify-center gap-2"
           >
             {creating
               ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
